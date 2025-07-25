@@ -23,7 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${QuicksandSans.variable} flex flex-col min-h-screen `}>
         <Header />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 pt-[130px]">{children}</main>
         <Footer />
       </body>
     </html>

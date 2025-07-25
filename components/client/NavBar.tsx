@@ -49,12 +49,23 @@ function NavBar({ data }: NavBarProps) {
           <ul className=" font-bold  text-[0.8em]">
             {data.map((item) => (
               <li
+                onClick={handleToggle}
                 className="uppercase py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
                 key={item.id}
               >
-                <Link href={item.slug}>{item.name}</Link>
+                <Link className="block" href={item.slug}>
+                  {item.name}
+                </Link>
               </li>
             ))}
+            <li
+              onClick={handleToggle}
+              className="uppercase  py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
+            >
+              <Link className="block" href={"/tai-khoan"}>
+                Đăng nhâp
+              </Link>
+            </li>
             <div className="py-[25px] pl-5 text-black border-t-[1px] border-[#ececec]">
               SÁCH VÀ VĂN PHÒNG PHẨM ONLINE
             </div>

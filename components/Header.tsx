@@ -12,7 +12,7 @@ async function Header() {
   const { data } = categories;
 
   return (
-    <div>
+    <header className="fixed top-0 left-0 w-full z-50 bg-white ">
       <div className=" md:max-w-laptop md:mx-auto md:w-full">
         <strong className=" md:hidden min-h-[30px] flex items-center justify-center  uppercase bg-primary w-full text-[12px] text-white">
           nhà sách bảo anh | bảo anh books
@@ -83,7 +83,7 @@ async function Header() {
           })}
         </div>
       </div>
-    </div>
+    </header>
   );
 }
 
