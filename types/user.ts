@@ -12,5 +12,5 @@ export interface UserResponse {
   data: User[];
   token: string;
   success: boolean;
-  message: string;
+  message?: string;
 }

@@ -14,7 +14,7 @@ export default function Input(props: Iprops) {
     <div>
       <label
         className="mb-[6px] block text-[#222] font-medium"
-        htmlFor="nameInput"
+        htmlFor={nameInput}
       >
         {label}
       </label>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import logo from "../public/logo.png";
 import Link from "next/link";
 import NavBar from "./client/NavBar";
-import { fetchAllCategory } from "@/services/category";
+import { fetchAllCategory } from "@/services/categoryService";
 import { CategoryResponse } from "@/types/category";
 
 async function Header() {
@@ -13,11 +13,11 @@ async function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white ">
-      <div className=" md:max-w-laptop md:mx-auto md:w-full">
+      <div className=" md:max-w-laptop md:mx-auto md:w-full px-[15px]">
         <strong className=" md:hidden min-h-[30px] flex items-center justify-center  uppercase bg-primary w-full text-[12px] text-white">
           nhà sách bảo anh | bảo anh books
         </strong>
-        <div className="min-h-[90px] flex items-center justify-between px-[15px] ">
+        <div className="min-h-[90px] flex items-center justify-between ">
           <div className=" md:flex  items-center md:flex-1">
             <NavBar data={data} />
 
@@ -35,7 +35,13 @@ async function Header() {
 
           <div className="relative w-[200px] h-[67.500px] md:order-first md:mr-[30px]  ">
             <Link href={"/"}>
-              <Image src={logo} alt="logo" fill className="object-contain" />
+              <Image
+                src={logo}
+                sizes="(max-width: 200px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                alt="logo"
+                fill
+                className="object-contain"
+              />
             </Link>
           </div>
 
@@ -74,8 +80,8 @@ async function Header() {
             return (
               <Link
                 key={item.id}
-                href={`/${item.slug}`}
-                className="uppercase py-[10px] text-[13px] font-semibold"
+                href={`/danh-muc-san-pham/${item.slug}`}
+                className="uppercase py-[10px] text-[13px] font-semibold hover:text-[hsla(0,0%,7%,.85)]"
               >
                 {item.name}
               </Link>

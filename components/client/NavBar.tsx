@@ -4,12 +4,19 @@ import { Category } from "@/types/category";
 import { Menu, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { LogOut } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/slices/userSlice";
 
 interface NavBarProps {
   data: Category[];
 }
 
 function NavBar({ data }: NavBarProps) {
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.user);
   const [showNavbar, setShowNavbar] = useState(false);
 
   const handleToggle = () => {
@@ -62,13 +69,30 @@ function NavBar({ data }: NavBarProps) {
               onClick={handleToggle}
               className="uppercase  py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
             >
-              <Link className="block" href={"/tai-khoan"}>
+              <Link className="block" href={"/dang-nhap"}>
                 Đăng nhâp
               </Link>
             </li>
             <div className="py-[25px] pl-5 text-black border-t-[1px] border-[#ececec]">
               SÁCH VÀ VĂN PHÒNG PHẨM ONLINE
             </div>
+
+            {user.isLoggedIn && (
+              <div className="flex justify-between gap-2 items-center px-5  border-t-[1px] border-[#ececec]">
+                <div className=" py-[25px]  text-primary">
+                  {user.user.email}
+                </div>
+                <button
+                  onClick={() => {
+                    dispatch(logout());
+                    setShowNavbar(false);
+                  }}
+                  className="font-medium inline-block hover:bg-[#CC1212]  cursor-pointer uppercase p-3 text-white bg-primary rounded-full  "
+                >
+                  <LogOut size={15} />
+                </button>
+              </div>
+            )}
           </ul>
         </div>
       </div>
