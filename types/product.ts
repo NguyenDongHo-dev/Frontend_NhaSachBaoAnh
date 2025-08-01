@@ -19,7 +19,7 @@ export interface Product {
 }
 
 export interface ProductResponse {
-  data: { products?: Product[]; category?: Category };
+  data: Product[];
   total?: number;
   limit?: number;
   current_page?: number;

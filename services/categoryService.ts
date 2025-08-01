@@ -1,4 +1,7 @@
-import { CategoryResponse } from "@/types/category";
+import {
+  CategoryProductListResponse,
+  CategoryResponse,
+} from "@/types/category";
 import { ProductResponse } from "@/types/product";
 
 export const fetchAllCategory = async (): Promise<CategoryResponse> => {
@@ -16,7 +19,7 @@ export const getProductsByCategory = async (
   page: number = 1,
   limit: number,
   sort: string
-): Promise<ProductResponse> => {
+): Promise<CategoryProductListResponse> => {
   const queryParams = new URLSearchParams({
     limit: limit.toString(),
     page: page.toString(),

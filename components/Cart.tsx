@@ -10,7 +10,7 @@ interface IProps {
 
 export default function Cart({ data }: IProps) {
   return (
-    <div className="w-full cursor-pointer flex flex-col gap-1.5 items-center">
+    <div className="w-full cursor-pointer flex flex-col gap-0.5 items-center">
       <div className="relative w-full aspect-[4/5] group">
         <div className="absolute top-0 left-0 z-10 mt-[30px] md:text-[1em]  flex items-center justify-center bg-primary text-[.9em] font-bold size-[44px] rounded-full text-white ">
           -12{data.discount}%
@@ -33,6 +33,11 @@ export default function Cart({ data }: IProps) {
               />
             </div>
           )}
+        </Link>
+      </div>
+      <div className="text-[.75em] opacity-70">
+        <Link href={`/danh-muc-san-pham/${data.category.status}`}>
+          {data.category.name}
         </Link>
       </div>
       <div className="text-center line-clamp-2 text-[#0d6ec3] hover:text-primary duration-200">
