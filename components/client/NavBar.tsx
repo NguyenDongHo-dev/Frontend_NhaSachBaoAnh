@@ -3,12 +3,13 @@
 import { Category } from "@/types/category";
 import { Menu, Search, X } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/userSlice";
+import SearchHeader from "./SearchHeader";
 
 interface NavBarProps {
   data: Category[];
@@ -18,6 +19,12 @@ function NavBar({ data }: NavBarProps) {
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.user);
   const [showNavbar, setShowNavbar] = useState(false);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleToggle = () => {
     setShowNavbar(!showNavbar);
@@ -43,17 +50,10 @@ function NavBar({ data }: NavBarProps) {
       >
         <div className="pt-[20px]">
           <div className="p-5 flex items-center">
-            <input
-              className="px-[10px] h-[32px] w-full border border-r-0 bg-white text-[12px] "
-              type="text"
-              placeholder="Tìm kiếm..."
-            />
-            <div className="size-[34px] flex items-center justify-center bg-primary">
-              <Search size={16} color="white" />
-            </div>
+            <SearchHeader />
           </div>
 
-          <ul className=" font-bold  text-[0.8em]">
+          <ul className=" font-bold !list-none !pl-0 text-[0.8em]">
             {data.map((item) => (
               <li
                 onClick={handleToggle}
@@ -65,14 +65,17 @@ function NavBar({ data }: NavBarProps) {
                 </Link>
               </li>
             ))}
-            <li
-              onClick={handleToggle}
-              className="uppercase  py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
-            >
-              <Link className="block" href={"/dang-nhap"}>
-                Đăng nhâp
-              </Link>
-            </li>
+            {!user.isLoggedIn && (
+              <li
+                onClick={handleToggle}
+                className="uppercase  py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
+              >
+                <Link className="block" href={"/dang-nhap"}>
+                  Đăng nhâp
+                </Link>
+              </li>
+            )}
+
             <div className="py-[25px] pl-5 text-black border-t-[1px] border-[#ececec]">
               SÁCH VÀ VĂN PHÒNG PHẨM ONLINE
             </div>
@@ -80,17 +83,25 @@ function NavBar({ data }: NavBarProps) {
             {user.isLoggedIn && (
               <div className="flex justify-between gap-2 items-center px-5  border-t-[1px] border-[#ececec]">
                 <div className=" py-[25px]  text-primary">
-                  {user.user.email}
+                  {user.user?.email}
                 </div>
                 <button
                   onClick={() => {
                     dispatch(logout());
                     setShowNavbar(false);
+                    localStorage.removeItem("refresh_Token");
                   }}
                   className="font-medium inline-block hover:bg-[#CC1212]  cursor-pointer uppercase p-3 text-white bg-primary rounded-full  "
                 >
                   <LogOut size={15} />
                 </button>
+              </div>
+            )}
+            {user?.user?.role === 1 && (
+              <div className="uppercase text-primary pl-5 hover:bg-primary hover:text-white duration-200 transition-colors py-3">
+                <Link className="block" href={"/admin/dashboard"}>
+                  Trang admin
+                </Link>
               </div>
             )}
           </ul>

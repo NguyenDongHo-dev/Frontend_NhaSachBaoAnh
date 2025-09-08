@@ -4,13 +4,18 @@ export interface Category {
   id: number;
   name: string;
   slug: string;
-  status: boolean;
-  reated_at?: string;
+  status: number;
+  created_at?: string;
   updated_at?: string;
 }
 
 export interface CategoryResponse {
   data: Category[];
+}
+
+export interface CategoryResponseOne {
+  success?: boolean;
+  data: Category;
 }
 
 export interface CategoryProductListResponse {

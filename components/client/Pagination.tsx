@@ -13,6 +13,8 @@ export default function Pagination({ currentPage, lastPage }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  if (lastPage <= 1) return null;
+
   const changePage = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", String(page));

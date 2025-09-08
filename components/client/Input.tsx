@@ -3,13 +3,24 @@
 interface Iprops {
   label: string;
   nameInput: string;
+  className?: string;
   type?: string;
   value: string;
-  onChangeForm: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  readOnly?: boolean;
+  onChangeForm?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export default function Input(props: Iprops) {
-  const { label, nameInput, type = "text", value, onChangeForm } = props;
+  const {
+    label,
+    nameInput,
+    type = "text",
+    value,
+    onChangeForm,
+    className,
+    readOnly,
+  } = props;
+  const isReadOnly = readOnly ?? (value !== undefined && !onChangeForm);
   return (
     <div>
       <label
@@ -19,8 +30,9 @@ export default function Input(props: Iprops) {
         {label}
       </label>
       <input
+        readOnly={isReadOnly}
         onChange={onChangeForm}
-        className="w-full focus:outline-none focus:shadow-lg h-[40px] px-3 border border-gray-300 rounded-md"
+        className={`focus:outline-none focus:shadow-lg h-[40px] px-3 border border-gray-300 rounded-md ${className} `}
         type={type}
         name={nameInput}
         id={nameInput}

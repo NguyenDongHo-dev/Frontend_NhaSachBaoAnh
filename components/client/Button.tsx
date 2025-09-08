@@ -1,16 +1,15 @@
 "use client";
 
-import React from "react";
-
 interface IProps {
   className?: string;
   children: React.ReactNode;
   id?: number;
   onClick?: (id?: number) => void;
+  disabled?: boolean;
 }
 
 export default function Button(props: IProps) {
-  const { className, children, id, onClick } = props;
+  const { className, children, id, onClick, disabled = false } = props;
 
   const hadleClick = () => {
     if (onClick) {
@@ -20,8 +19,11 @@ export default function Button(props: IProps) {
 
   return (
     <button
+      disabled={disabled}
       onClick={hadleClick}
-      className={`${className} cursor-pointer uppercase inline text-sm  border-2 px-4 py-2  transition-all duration-300 hover:shadow-md`}
+      className={`${className} ${
+        disabled && "opacity-50 cursor-default"
+      } cursor-pointer uppercase inline text-sm disabled:opacity-50 disabled:cursor-default border-2   transition-all duration-300 hover:shadow-md `}
     >
       {children}
     </button>

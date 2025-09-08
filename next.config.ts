@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["127.0.0.1", "localhost"],
   },
+  experimental: {
+    globalNotFound: true,
+  },
 };
 
 export default nextConfig;

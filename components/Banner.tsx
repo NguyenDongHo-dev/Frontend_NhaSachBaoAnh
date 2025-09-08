@@ -4,7 +4,7 @@ import { ShoppingBag } from "lucide-react";
 
 export default function Banner() {
   return (
-    <div className="relative w-full h-[700px]">
+    <div className="relative w-full h-[640px]">
       <Image src={slide} alt="Banner" fill className="object-cover" />
       <div className="absolute z-10  top-0 left-0 right-0 bottom-0 bg-[rgba(0,0,0,0.25)]">
         <div className="max-w-laptop mx-auto h-full flex items-center z-20 px-[10px]">

@@ -4,17 +4,20 @@ export interface Product {
   id: number;
   name: string;
   slug: string;
-  status: boolean;
+  status: number;
   description: string;
   short_description: string;
   discount: number;
   sold: number;
   price: number;
   stock: number;
-  image: string[];
+  image: {
+    id: number;
+    url: string;
+  }[];
   rating: string;
   category: Category;
-  reated_at: string;
+  created_at: string;
   updated_at: string;
 }
 
@@ -28,4 +31,5 @@ export interface ProductResponse {
 
 export interface ProductDetailsResponse {
   data: Product;
+  success?: boolean;
 }

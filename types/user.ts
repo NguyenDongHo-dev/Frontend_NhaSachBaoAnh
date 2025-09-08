@@ -3,14 +3,28 @@ export interface User {
   name: string;
   address: string;
   phone: string;
+  role?: number;
   email: string;
-  reated_at: string;
-  updated_at: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface UserResponse {
   data: User[];
-  token: string;
-  success: boolean;
+  total?: number;
+  limit?: number;
+  current_page?: number;
+  last_page?: number;
+  success?: boolean;
   message?: string;
+  errors?: {
+    email?: string[];
+  };
+}
+
+export interface UserResponseOne {
+  data: User | null;
+  success?: boolean;
+  message?: string;
+  token: string;
 }

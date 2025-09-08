@@ -1,13 +1,30 @@
 import {
+  Category,
   CategoryProductListResponse,
   CategoryResponse,
+  CategoryResponseOne,
 } from "@/types/category";
-import { ProductResponse } from "@/types/product";
+
+interface playLoat {
+  token: string;
+  category: Category;
+}
+
+interface playLoatDetele {
+  token: string;
+  id: number;
+}
+
+interface playLoatNew {
+  token: string;
+  form: {
+    name: string;
+    status: number;
+  };
+}
 
 export const fetchAllCategory = async (): Promise<CategoryResponse> => {
-  const res = await fetch(`${process.env.API_SERVER}/api/category`, {
-    next: { revalidate: 3600 },
-  });
+  const res = await fetch(`${process.env.API_SERVER}/api/category`);
 
   if (!res.ok) throw new Error("Failed to fetch");
 
@@ -36,4 +53,76 @@ export const getProductsByCategory = async (
   if (!res.ok) throw new Error("Failed to fetch");
 
   return res.json();
+};
+
+export const geetDetailsCatogory = async (
+  slug: string
+): Promise<CategoryResponseOne | null> => {
+  const res = await fetch(`${process.env.API_SERVER}/api/category/${slug}`, {
+    next: { revalidate: 3600 },
+  });
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  return data;
+};
+
+export const fetchUpdateCategory = async ({
+  category,
+  token,
+}: playLoat): Promise<CategoryResponseOne | null> => {
+  const res = await fetch(
+    `${process.env.API_SERVER}/api/category/${category.id}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(category),
+    }
+  );
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  return data;
+};
+
+export const fetchDeleteCategory = async ({
+  id,
+  token,
+}: playLoatDetele): Promise<CategoryResponseOne | null> => {
+  const res = await fetch(`${process.env.API_SERVER}/api/category/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  return data;
+};
+
+export const fetchNewCategory = async ({
+  form,
+  token,
+}: playLoatNew): Promise<CategoryResponseOne | null> => {
+  const res = await fetch(`${process.env.API_SERVER}/api/category`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(form),
+  });
+
+  if (!res.ok) return null;
+
+  const data = await res.json();
+  return data;
 };
