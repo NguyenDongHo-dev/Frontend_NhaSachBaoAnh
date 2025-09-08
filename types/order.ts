@@ -1,5 +1,5 @@
 export interface Order {
-  id: string;
+  id: number;
   user_id: number;
   order_number: string;
   shipping_address: string;
@@ -29,7 +29,7 @@ export interface Order {
   updated_at: string;
 }
 
-interface ison {
+export interface ison {
   success: boolean;
   message: string;
   status?: number;

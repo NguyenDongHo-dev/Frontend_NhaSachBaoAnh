@@ -1,4 +1,5 @@
 import {
+  ison,
   OderAllOderOfUser,
   OderCreateNew,
   OderDetailsByUser,
@@ -84,5 +85,26 @@ export const fetchAllOrderOflUser = async ({
     return { ...data, status: res.status };
   }
 
+  return data;
+};
+
+export const fetchDeleteOderOfUser = async ({
+  id,
+  token,
+}: {
+  id: number;
+  token: string;
+}): Promise<ison> => {
+  const res = await fetch(`${process.env.API_SERVER}/api/order/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch");
+
+  const data = await res.json();
   return data;
 };

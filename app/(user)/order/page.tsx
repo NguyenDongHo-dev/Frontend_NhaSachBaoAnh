@@ -2,7 +2,10 @@
 
 import { Order } from "@/types/order";
 import React, { useEffect, useRef, useState } from "react";
-import { fetchAllOrderOflUser } from "@/services/orderService";
+import {
+  fetchAllOrderOflUser,
+  fetchDeleteOderOfUser,
+} from "@/services/orderService";
 import { formatDateVN, formatPrice } from "@/utils";
 import Image from "next/image";
 import Button from "@/components/client/Button";
@@ -10,6 +13,9 @@ import Link from "next/link";
 import Loading from "@/components/loading ";
 import Pagination from "@/components/client/Pagination";
 import { useSearchParams } from "next/navigation";
+import Modal from "@/components/client/Modal";
+import { toast } from "react-toastify";
+import NotFondComponent from "@/components/client/NotFond";
 
 interface OrderResponse {
   data?: Order[];
@@ -24,6 +30,9 @@ export default function AllOrderDetailUserPage() {
   const tokenStoge = localStorage.getItem("refresh_Token");
   const [allOder, setAllOder] = useState<OrderResponse>();
   const [loading, setLoading] = useState(false);
+  const [showModalRemove, setShowModalRemove] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
   const page = Number(searchParams.get("page") || 1);
   const [notFound, setNotFound] = useState(false);
   const limit = 10;
@@ -95,24 +104,46 @@ export default function AllOrderDetailUserPage() {
   }
 
   if (!allOder?.data || allOder.data?.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-[300px]">
-        <div className="flex flex-col gap-2">
-          <div>Bạn chưa có đơn hàng nào.</div>
-          <div className="mx-auto">
-            <Link href={"/"}>
-              <Button className="px-2 py-1 bg-primary  hover:bg-[#CC1212]  transition-all duration-300 text-white border-transparent font-bold rounded-[4px] text-[18px]">
-                Trang chủ
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
+    return <NotFondComponent />;
   }
+
+  const handlerRemoveOrder = (id: number) => {
+    setShowModalRemove(true);
+    setSelectedId(id);
+  };
+
+  const confirmRemove = async () => {
+    if (selectedId) {
+      const res = await fetchDeleteOderOfUser({
+        id: selectedId,
+        token: tokenStoge,
+      });
+      if (res.success) {
+        toast.success("Đã xóa đơn hàng hành công");
+        setAllOder((prev) =>
+          prev
+            ? {
+                ...prev,
+                data: prev.data?.filter((order) => order.id !== selectedId),
+              }
+            : prev
+        );
+        setShowModalRemove(false);
+        setSelectedId(null);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  };
 
   return (
     <>
+      {showModalRemove && (
+        <Modal
+          label="Bạn có chắc chấn muốn xóa đơn hàng này không"
+          onClose={() => setShowModalRemove(false)}
+          onConfirm={confirmRemove}
+        />
+      )}
       <div className="mt-[30px] md:mt-0 mx-auto max-w-laptop px-[15px] pt-[30px]">
         <h1 className="text-primary text-[1.1em] font-semibold uppercase  ">
           Đơn hàng của tôi
@@ -199,7 +230,10 @@ export default function AllOrderDetailUserPage() {
                     Tổng tiền {formatPrice(item?.total_all!)} đ
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <Button className="py-1 px-2 rounded-[4px] font-bold   ">
+                    <Button
+                      onClick={() => handlerRemoveOrder(item.id)}
+                      className="py-1 px-2 rounded-[4px] font-bold   "
+                    >
                       Hủy đơn hàng
                     </Button>
                     <Link href={`/order/${item.id}`}>
