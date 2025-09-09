@@ -59,7 +59,7 @@ export default function ProductList({ slug, dataRer }: Props) {
           limit: res.limit,
           current_page: res.current_page,
           last_page: res.last_page,
-          category,
+          category: category || undefined,
         });
       } catch (err) {
         console.error("Error fetching products", err);

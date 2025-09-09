@@ -1,5 +1,4 @@
 import React from "react";
-import { Search } from "lucide-react";
 import Image from "next/image";
 import logo from "../public/logo.png";
 import Link from "next/link";

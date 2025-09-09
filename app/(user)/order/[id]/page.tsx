@@ -7,7 +7,7 @@ import { Order } from "@/types/order";
 import { formatPrice } from "@/utils";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-import NotFound from "./NotFound";
+import NotFondComponent from "@/components/client/NotFond";
 
 export default function DetailsOrderPage({
   params,
@@ -64,7 +64,7 @@ export default function DetailsOrderPage({
     return str;
   };
 
-  if (notFound) return <NotFound />;
+  if (notFound) return <NotFondComponent />;
   return (
     <>
       {loading ? (

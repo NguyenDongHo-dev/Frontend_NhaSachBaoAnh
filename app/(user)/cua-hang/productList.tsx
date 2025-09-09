@@ -37,24 +37,28 @@ export default function ProductList({ dataRer, loading, searchName }: Props) {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row items-center md:justify-between justify-center w-full ">
-        <div className="flex items-center gap-2 text-[1.15em]">
-          <div className="uppercase cursor-pointer text-[hsla(0,0%,40%,.7)] font-normal hover:text-[#111] duration-200 ">
+      <div className="flex flex-col md:flex-row items-start md:justify-between justify-center w-full ">
+        <div className="text-[18.4px]">
+          <div className="uppercase inline-block cursor-pointer text-[hsla(0,0%,40%,.7)] font-normal hover:text-[#111] duration-200 ">
             <Link href={"/"}>Trang chủ</Link>
           </div>
-          <span className="font-light text-[#222]">/</span>
+          <span className="font-light text-[#222] mx-[8px]">/</span>
 
           <div
-            className={`${
+            className={`inline-block hover:text-[#111] duration-200 ${
               searchName ? " text-[hsla(0,0%,40%,.7)]" : "font-semibold"
             } uppercase`}
           >
             <Link href={`/cua-hang`}>Của hàng</Link>
           </div>
+
           {searchName && (
-            <div className="uppercase font-semibold">
-              / Kết quả tìm kiếm cho "{searchName}"
-            </div>
+            <>
+              <span className="font-light text-[#222] mx-[8px]">/</span>
+              <div className="uppercase font-semibold inline-block ">
+                Kết quả tìm kiếm cho "{searchName}"
+              </div>
+            </>
           )}
 
           {current_page && current_page > 1 && (
@@ -69,9 +73,8 @@ export default function ProductList({ dataRer, loading, searchName }: Props) {
 
         <div className="flex items-center gap-1">
           {current_page && total && limit && (
-            <div className="hidden md:block">
-              Hiển thị {(current_page - 1) * limit + 1}–
-              {Math.min(current_page * limit, total)} của {total} kết quả
+            <div className="hidden md:block text-nowrap">
+              Showing all {total} results
             </div>
           )}
 

@@ -21,7 +21,7 @@ export interface CategoryResponseOne {
 export interface CategoryProductListResponse {
   data: {
     products: Product[];
-    category: Category;
+    category: Category | null;
   };
   total?: number;
   limit?: number;
@@ -29,4 +29,5 @@ export interface CategoryProductListResponse {
   last_page?: number;
   success?: boolean;
   message?: string;
+  status?: number;
 }

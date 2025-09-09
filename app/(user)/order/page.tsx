@@ -132,6 +132,12 @@ export default function AllOrderDetailUserPage() {
         setSelectedId(null);
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
+
+      if (!res.success) {
+        toast.error(res.message);
+        setShowModalRemove(false);
+        setSelectedId(null);
+      }
     }
   };
 

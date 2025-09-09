@@ -5,11 +5,10 @@ import CartNav from "./CartNav";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { logout } from "@/redux/slices/userSlice";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function CartHeader() {
   const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -32,12 +31,11 @@ export default function CartHeader() {
 
   const handleLogout = () => {
     dispatch(logout());
-    if (pathname === "/thanh-toan") {
-      router.push("/");
-    }
+
     localStorage.removeItem("refresh_Token");
     setShow(false);
     timerRef.current = null;
+    router.push("/");
   };
 
   return (

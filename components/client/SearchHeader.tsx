@@ -91,6 +91,12 @@ export default function SearchHeader() {
         className="px-[10px] h-[32px] w-full  border border-r-0 bg-white text-[12px] "
         type="text"
         placeholder="Tìm kiếm..."
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            onClickSearch();
+          }
+        }}
         onFocus={() => {
           if (productSearch?.data && productSearch.data.length > 0) {
             setOpen(true);

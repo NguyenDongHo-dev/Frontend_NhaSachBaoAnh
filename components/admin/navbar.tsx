@@ -17,7 +17,7 @@ export default function Navbar() {
             </Link>
             <Link
               className="pl-[15px] hover:bg-blue-400 py-2 rounded-[4px]"
-              href={"/admin/order"}
+              href={"/admin/orders"}
             >
               Order
             </Link>

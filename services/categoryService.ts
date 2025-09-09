@@ -43,16 +43,56 @@ export const getProductsByCategory = async (
     sort: sort,
   });
 
-  const res = await fetch(
-    `${process.env.API_SERVER}/api/category/type/${slug}?${queryParams}`,
-    {
+  const url = `${process.env.API_SERVER}/api/category/type/${slug}?${queryParams}`;
+
+  try {
+    const res = await fetch(url, {
       next: { revalidate: 3600 },
+    });
+
+    if (!res.ok) {
+      return {
+        data: {
+          products: [],
+          category: null,
+        },
+        total: 0,
+        limit,
+        current_page: page,
+        last_page: 1,
+        status: res.status,
+      };
     }
-  );
 
-  if (!res.ok) throw new Error("Failed to fetch");
-
-  return res.json();
+    try {
+      const data = await res.json();
+      return data;
+    } catch (parseError) {
+      return {
+        data: {
+          products: [],
+          category: null,
+        },
+        total: 0,
+        limit,
+        current_page: page,
+        last_page: 1,
+        status: 500,
+      };
+    }
+  } catch (error) {
+    return {
+      data: {
+        products: [],
+        category: null,
+      },
+      total: 0,
+      limit,
+      current_page: page,
+      last_page: 1,
+      status: 500,
+    };
+  }
 };
 
 export const geetDetailsCatogory = async (

@@ -103,8 +103,46 @@ export const fetchDeleteOderOfUser = async ({
     },
   });
 
-  if (!res.ok) throw new Error("Failed to fetch");
+  const data = await res.json();
+
+  if (!res.ok) {
+    return { ...data, status: res.status };
+  }
+
+  return data;
+};
+
+export const fetchAllOrderByAdmin = async ({
+  token,
+  page = 1,
+  limit,
+}: {
+  token: string;
+  page: number;
+  limit: number;
+}): Promise<OderAllOderOfUser> => {
+  const params: Record<string, string> = {
+    limit: limit.toString(),
+    page: page.toString(),
+  };
+  const queryParams = new URLSearchParams(params);
+
+  const res = await fetch(
+    `${process.env.API_SERVER}/api/order/allOrder?${queryParams}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
 
   const data = await res.json();
+
+  if (!res.ok) {
+    return { ...data, status: res.status };
+  }
+
   return data;
 };
