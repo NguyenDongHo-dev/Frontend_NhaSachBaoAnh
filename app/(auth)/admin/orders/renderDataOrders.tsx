@@ -10,6 +10,26 @@ interface Props {
 }
 
 export default function RenderDataOrders({ dataRer }: Props) {
+  const isStates = (status: string) => {
+    let str = "";
+    switch (status) {
+      case "padding":
+        str = "Đang xử lý";
+        break;
+      case "in_transit":
+        str = "Đang giao hàng";
+        break;
+      case "completed":
+        str = "Hoàn tất";
+        break;
+      case "cancelled":
+        str = "Đã hủy";
+        break;
+      default:
+        str = "Không xác định";
+    }
+    return str;
+  };
   return (
     <div>
       <h1 className="font-bold text-primary text-[20px]">Quản lý hóa đơn</h1>
@@ -28,6 +48,7 @@ export default function RenderDataOrders({ dataRer }: Props) {
               <th className="p-3 border-b text-center w-[120px]">
                 Ngày đặt hàng
               </th>
+              <th className="p-3 border-b text-center w-[120px]">Tình trạng</th>
               <th className="p-3 border-b text-center w-[150px]">Tổng tiền</th>
               <th className="p-3 border-b text-center w-[120px]">Action</th>
             </tr>
@@ -74,6 +95,9 @@ export default function RenderDataOrders({ dataRer }: Props) {
                 </td>
                 <td className="p-2 text-center text-gray-600">
                   {formatDateVN(item.created_at)}
+                </td>
+                <td className="p-2 text-center text-gray-600">
+                  {isStates(item.status)}
                 </td>
                 <td className="p-2 text-center font-bold text-primary">
                   {formatPrice(item.total_all)}đ

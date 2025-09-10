@@ -1,5 +1,412 @@
-import React from "react";
+"use client";
 
-export default function DetailsOrderPage() {
-  return <div>page</div>;
+import Input from "@/components/client/Input";
+import Modal from "@/components/client/Modal";
+import Quantity_button from "@/components/client/Quantity_button";
+import SearchableDropdown from "@/components/client/SearchableDropdown";
+import Loading from "@/components/loading ";
+import { dataVn } from "@/data";
+import { fetchDetailByAdminOrder } from "@/services/orderService";
+import { Order } from "@/types/order";
+import { formatDateVN, formatPrice, isStates } from "@/utils";
+import { X } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useMemo, useState } from "react";
+
+export default function DetailsOrderPage({
+  params,
+}: {
+  params: Promise<{ id: number }>;
+}) {
+  const { id } = React.use(params);
+  const router = useRouter();
+  const tokenStoge = localStorage.getItem("refresh_Token");
+  const [detailsOrder, setDetailsOrder] = useState<Order>();
+  const [loading, setLoading] = useState(false);
+
+  const [street, setStreet] = useState("");
+  const [selectedCity, setSelectedCity] = useState<string>("");
+  const [selectedWart, setSelectedWart] = useState<
+    { Code: string; FullName: string; ProvinceCode: string }[] | undefined
+  >(undefined);
+  const [ward, setWard] = useState<string>("");
+
+  const [priceShipping, setPriceShipping] = useState<number>(0);
+
+  const [showRemoveItem, setShowRemoveItem] = useState(false);
+  const [idRemoveItem, setIdRemoveItem] = useState<Number | null>(null);
+  const [nameRemoveItem, setNameRemoveItem] = useState<string | null>(null);
+
+  useEffect(() => {
+    const city = dataVn.find((isCity) => isCity.FullName === selectedCity);
+    if (city) {
+      setSelectedWart(city.Wards);
+      setWard("");
+    }
+  }, [selectedCity]);
+
+  const fetchDetailOrderAdmin = async () => {
+    if (tokenStoge) {
+      setLoading(true);
+      const res = await fetchDetailByAdminOrder({
+        token: tokenStoge,
+        idOrder: id,
+      });
+      if (res.success) {
+        setLoading(false);
+        setDetailsOrder(res.data);
+
+        const [street, ward, city] = res.data.shipping_address
+          .split(",")
+          .map((s) => s.trim());
+        setPriceShipping(res.data.price_shipping);
+
+        setStreet(street || "");
+        setWard(ward || "");
+        setSelectedCity(city || "");
+      }
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDetailOrderAdmin();
+  }, [id]);
+
+  console.log(detailsOrder);
+
+  const onChange = () => {};
+
+  const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value, name } = e.target;
+
+    if (name === "shipping") {
+      value === "Ship hỏa tốc"
+        ? setPriceShipping(45000)
+        : setPriceShipping(30000);
+      setDetailsOrder({
+        ...detailsOrder!,
+        delivery_method: value,
+      });
+    }
+  };
+
+  const handleRemoveItem = () => {
+    const updatedItems =
+      detailsOrder?.order_items?.filter(
+        (item) => item.product.id !== idRemoveItem
+      ) ?? [];
+    setDetailsOrder({
+      ...detailsOrder!,
+      order_items: updatedItems,
+    });
+  };
+
+  const totalAllPrice = useMemo(() => {
+    return (
+      detailsOrder?.order_items?.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      ) ?? 0
+    );
+  }, [detailsOrder?.order_items]);
+
+  const totalAll = useMemo(() => {
+    return totalAllPrice + priceShipping;
+  }, [totalAllPrice, priceShipping]);
+
+  if (loading) return <Loading />;
+
+  return (
+    <div>
+      {showRemoveItem && (
+        <Modal
+          label={`Bạn có chắc muốn xóa sản phẩm "${nameRemoveItem}" ra khổi hóa đơn ?`}
+          onClose={() => {
+            setShowRemoveItem(false);
+            setIdRemoveItem(null);
+            setNameRemoveItem(null);
+          }}
+          onConfirm={handleRemoveItem}
+        />
+      )}
+      <div className="">
+        <div className="flex gap-4">
+          <div className="flex-1 h-[calc(100vh-32px)] overflow-y-auto border-r border-gray-200 pr-3">
+            <h1 className="text-primary text-[1.1em] font-bold uppercase  ">
+              Chi tiết hóa đơn
+            </h1>
+            <div className="flex gap-1 items-center mt-2 ">
+              <div className="font-bold">Mã hóa đơn:</div>
+              <div>{detailsOrder?.order_number}</div>
+            </div>
+            <div className="flex gap-1 items-center mt-2 ">
+              <div className="font-bold">Ngày đặt đơn hàng:</div>
+              <div>{formatDateVN(detailsOrder?.created_at!)}</div>
+            </div>
+            <h1 className=" text-[1em] text-primary font-bold uppercase mt-2 ">
+              Thông tin người nhận hàng
+            </h1>
+            <div className="flex flex-col gap-2 mt-2">
+              <div className="flex w-full gap-4 ">
+                <div className="flex-1">
+                  <Input
+                    label="Tên người nhận hàng"
+                    nameInput="order_recipient_name"
+                    className="w-full"
+                    value={detailsOrder?.order_recipient_name!}
+                    onChangeForm={onChange}
+                  />
+                </div>
+                <div className=" flex-1 ">
+                  <Input
+                    label="Số điện thoại"
+                    nameInput="recipient_phone"
+                    className="w-full"
+                    value={detailsOrder?.recipient_phone!}
+                    onChangeForm={onChange}
+                  />
+                </div>
+              </div>
+              <div className="mb-[6px] block text-[#222] font-medium">
+                Đỉa chỉ giao hàng:
+              </div>
+              <div className="flex flex-col sm:flex-row sm:gap-[22px] sm:items-center gap-[6px] ">
+                <div className="flex-1">
+                  <SearchableDropdown
+                    label="Tỉnh/Thành phố "
+                    placeholder="Chọn tỉnh/thành phố"
+                    items={dataVn}
+                    selected={selectedCity}
+                    setSelected={setSelectedCity}
+                  />
+                </div>
+                <div className="flex-1">
+                  <SearchableDropdown
+                    label="Phường/Xã "
+                    placeholder="Chọn phường/xã"
+                    items={selectedWart || []}
+                    selected={ward}
+                    setSelected={setWard}
+                  />
+                </div>
+              </div>
+              <Input
+                label="Địa chỉ cụ thể"
+                nameInput="street"
+                className="w-full"
+                value={street}
+                onChangeForm={onChange}
+              />
+              <div className="mb-[4px] block text-[#222] font-medium">
+                Notes:
+              </div>
+              <textarea
+                cols={10}
+                value={detailsOrder?.notes}
+                className="p-3 shadow border border-[#ddd] focus:outline-none focus:shadow w-[100%]"
+                name="notes"
+                placeholder="Ghi chú của đơn hàng"
+              ></textarea>
+            </div>
+            <h1 className=" text-[1em] text-primary font-bold uppercase mt-2 ">
+              Sản phẩm đã đặt
+            </h1>
+            <div className="mt-2 flex flex-col gap-3">
+              <div className="bg-gray-200 p-2 rounded-[10px]">
+                <div className="grid md:grid-cols-[1fr_120px_100px_150px] grid-cols-[1fr_100px] font-bold items-center text-center gap-1">
+                  <div>Sản phẩm</div>
+                  <div className="hidden md:block">Số lượng</div>
+                  <div className="hidden md:block">Đơn giá</div>
+                  <div className="text-primary  ">Tổng cộng</div>
+                </div>
+                <div className="py-2 mt-2 bg-white rounded-[4px] ">
+                  <div className="flex flex-col gap-5">
+                    {detailsOrder?.order_items &&
+                    detailsOrder.order_items.length > 0 ? (
+                      detailsOrder.order_items.map((item) => (
+                        <div
+                          key={item.product.id}
+                          className="grid md:grid-cols-[1fr_120px_100px_150px] grid-cols-[1fr_100px] items-center gap-1"
+                        >
+                          <div className="ml-8 flex gap-4 items-center relative">
+                            <div
+                              onClick={() => {
+                                setShowRemoveItem(true);
+                                setIdRemoveItem(item.product.id);
+                                setNameRemoveItem(item.product.name);
+                              }}
+                              className="absolute -left-6 top-1/2 -translate-y-1/2 z-50 border rounded-full cursor-pointer"
+                            >
+                              <X size={18} />
+                            </div>
+                            <div className="relative size-[80px] min-w-[80px]">
+                              <Image
+                                fill
+                                alt={item.product.name}
+                                src={`${process.env.API_SERVER}/${item.product.image[0]}`}
+                                className="object-cover"
+                              />
+                            </div>
+                            <div>
+                              <div className="line-clamp-2">
+                                {item.product.name}
+                              </div>
+                              <div className="block md:hidden mt-1">
+                                <div className="flex items-center gap-0.5">
+                                  <div className="font-bold">
+                                    {item.quantity}x
+                                  </div>
+                                  <div>{formatPrice(item.price)}đ</div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className=" hidden md:flex justify-center">
+                            <Quantity_button
+                              quantity={item.quantity}
+                              setQuantity={(newQuantity) => {
+                                const updatedItems =
+                                  detailsOrder.order_items.map((orderItem) =>
+                                    orderItem.product.id === item.product.id
+                                      ? { ...orderItem, quantity: newQuantity }
+                                      : orderItem
+                                  );
+                                setDetailsOrder({
+                                  ...detailsOrder,
+                                  order_items: updatedItems,
+                                });
+                              }}
+                              onClick={(type) => {
+                                if (type === "+") {
+                                  const newQuantity = item.quantity + 1;
+                                  const updatedItems =
+                                    detailsOrder.order_items.map((orderItem) =>
+                                      orderItem.product.id === item.product.id
+                                        ? {
+                                            ...orderItem,
+                                            quantity: newQuantity,
+                                          }
+                                        : orderItem
+                                    );
+                                  setDetailsOrder({
+                                    ...detailsOrder,
+                                    order_items: updatedItems,
+                                  });
+                                }
+                                if (type === "-") {
+                                  const newQuantity = Math.max(
+                                    1,
+                                    item.quantity - 1
+                                  );
+                                  const updatedItems =
+                                    detailsOrder.order_items.map((orderItem) =>
+                                      orderItem.product.id === item.product.id
+                                        ? {
+                                            ...orderItem,
+                                            quantity: newQuantity,
+                                          }
+                                        : orderItem
+                                    );
+                                  setDetailsOrder({
+                                    ...detailsOrder,
+                                    order_items: updatedItems,
+                                  });
+                                }
+                              }}
+                            />
+                          </div>
+                          <div className="text-center hidden md:block">
+                            {formatPrice(item.price)} đ
+                          </div>
+                          <div className="text-center">
+                            {formatPrice(item.price * item.quantity)} đ
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center py-6 text-gray-500">
+                        Không có sản phẩm nào trong đơn hàng
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="w-[500px]">
+            <div>
+              <h1 className=" text-[1em] font-bold uppercase mt-2 ">
+                Hình thức giao hàng
+              </h1>
+
+              <select
+                value={detailsOrder?.delivery_method}
+                onChange={handleChangeSelect}
+                name="shipping"
+                className="border-1 w-[300px] h-[50px] pl-[11px] pr-[22px] block mt-2"
+              >
+                <option value={"Giao hàng toàn quốc"}>
+                  Giao hàng toàn quốc
+                </option>
+                <option value={"Ship hỏa tốc"}>Ship hỏa tốc</option>
+              </select>
+              <h1 className=" text-[1em] font-bold uppercase mt-2 ">
+                Hình thức thanh toán
+              </h1>
+              <div className="mt-2">Tình trạng đơn hàng:</div>
+              <select
+                value={detailsOrder?.status}
+                onChange={handleChangeSelect}
+                name="status"
+                className="border-1 w-[300px] h-[50px] pl-[11px] pr-[22px] block mt-2"
+              >
+                <option value={"padding"}>Đang xử lý</option>
+                <option value={"shipping"}>Đang đang giao hàng</option>
+                <option value={"success"}>Thành công</option>
+                <option value={"cancel"}>Hủy đơn hàng</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-2 mt-2">
+              <h1 className=" text-[1em] font-bold uppercase mt-2 ">Tổng</h1>
+              <div className="flex items-center gap-1">
+                <div>Tổng giá sản phẩm:</div>
+                <div>{formatPrice(totalAllPrice!)} đ</div>
+              </div>
+              <div className="flex items-center gap-1">
+                <div>Phí giao hàng:</div>
+                <div>{formatPrice(priceShipping!)} đ</div>
+              </div>
+              <div className="bg-yellow-100 text-primary font-bold w-fit py-2 px-3 text-[18px]">
+                Tổng: {formatPrice(totalAll!)}đ
+              </div>
+            </div>
+
+            <div className="flex gap-4 mt-5">
+              <button
+                onClick={() => router.push("/admin/orders")}
+                className="px-3 py-2 bg-gray-200 rounded-md hover:bg-gray-300 cursor-pointer"
+              >
+                ← Quay lại danh sách đơn
+              </button>
+              <button
+                onClick={() => fetchDetailOrderAdmin()}
+                className="px-3 py-2 bg-blue-100 text-blue-700 hover:bg-blue-200  rounded-md  cursor-pointer"
+              >
+                Làm mới
+              </button>
+              <button
+                onClick={() => router.push("/orders")}
+                className="px-3 py-2 bg-blue-500 rounded-md hover:bg-blue-600 cursor-pointer"
+              >
+                Cập Nhật
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

@@ -13,3 +13,24 @@ export const formatDateVN = (dateString: string) => {
 
   return `${hours}:${minutes} ${day}/${month}/${year}`;
 };
+
+export const isStates = (status: string) => {
+  let str = "";
+  switch (status) {
+    case "padding":
+      str = "Đang xử lý";
+      break;
+    case "in_transit":
+      str = "Đang giao hàng";
+      break;
+    case "completed":
+      str = "Hoàn tất";
+      break;
+    case "cancelled":
+      str = "Đã hủy";
+      break;
+    default:
+      str = "Không xác định";
+  }
+  return str;
+};

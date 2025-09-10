@@ -146,3 +146,30 @@ export const fetchAllOrderByAdmin = async ({
 
   return data;
 };
+
+export const fetchDetailByAdminOrder = async ({
+  token,
+  idOrder,
+}: {
+  token: string;
+  idOrder: number;
+}): Promise<OderDetailsByUser> => {
+  const res = await fetch(
+    `${process.env.API_SERVER}/api/order/details/${idOrder}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    return { ...data, status: res.status };
+  }
+
+  return data;
+};

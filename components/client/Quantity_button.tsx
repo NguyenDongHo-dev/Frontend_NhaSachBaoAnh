@@ -1,5 +1,4 @@
 "use client";
-import { useAppSelector } from "@/hooks/redux";
 import { useEffect, useState } from "react";
 interface IPros {
   quantity: number;
