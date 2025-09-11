@@ -6,13 +6,17 @@ import Quantity_button from "@/components/client/Quantity_button";
 import SearchableDropdown from "@/components/client/SearchableDropdown";
 import Loading from "@/components/loading ";
 import { dataVn } from "@/data";
-import { fetchDetailByAdminOrder } from "@/services/orderService";
+import {
+  fetchDetailByAdminOrder,
+  fetchUpdateOrderByAdmin,
+} from "@/services/orderService";
 import { Order } from "@/types/order";
-import { formatDateVN, formatPrice, isStates } from "@/utils";
+import { formatDateVN, formatPrice } from "@/utils";
 import { X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
+import { toast } from "react-toastify";
 
 export default function DetailsOrderPage({
   params,
@@ -38,6 +42,17 @@ export default function DetailsOrderPage({
   const [idRemoveItem, setIdRemoveItem] = useState<Number | null>(null);
   const [nameRemoveItem, setNameRemoveItem] = useState<string | null>(null);
 
+  const [showUpdateItem, setShowUpdateItem] = useState(false);
+
+  const [err, setErr] = useState<{
+    order_recipient_name?: string;
+    recipient_phone?: string;
+    selectedCity?: string;
+    ward?: string;
+    street?: string;
+    isItem?: string;
+  }>({});
+
   useEffect(() => {
     const city = dataVn.find((isCity) => isCity.FullName === selectedCity);
     if (city) {
@@ -47,6 +62,7 @@ export default function DetailsOrderPage({
   }, [selectedCity]);
 
   const fetchDetailOrderAdmin = async () => {
+    setErr({});
     if (tokenStoge) {
       setLoading(true);
       const res = await fetchDetailByAdminOrder({
@@ -74,12 +90,45 @@ export default function DetailsOrderPage({
     fetchDetailOrderAdmin();
   }, [id]);
 
-  console.log(detailsOrder);
+  const handleSelectCity = (city: string) => {
+    setSelectedCity(city);
+    setErr((prev) => {
+      const newErr = { ...prev };
+      delete newErr.selectedCity;
+      return newErr;
+    });
+  };
 
-  const onChange = () => {};
+  const handleSelectWard = (ward: string) => {
+    setWard(ward);
+    setErr((prev) => {
+      const newErr = { ...prev };
+      delete newErr.ward;
+      return newErr;
+    });
+  };
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    setDetailsOrder({
+      ...detailsOrder!,
+      [name]: value,
+    });
+
+    if (err[name as keyof typeof err]) {
+      setErr((prev) => {
+        const newErr = { ...prev };
+        delete newErr[name as keyof typeof err];
+        return newErr;
+      });
+    }
+  };
 
   const handleChangeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value, name } = e.target;
+
+    if (!detailsOrder) return;
 
     if (name === "shipping") {
       value === "Ship hỏa tốc"
@@ -88,6 +137,13 @@ export default function DetailsOrderPage({
       setDetailsOrder({
         ...detailsOrder!,
         delivery_method: value,
+      });
+    }
+
+    if (name === "status") {
+      setDetailsOrder({
+        ...detailsOrder,
+        status: value,
       });
     }
   };
@@ -116,6 +172,80 @@ export default function DetailsOrderPage({
     return totalAllPrice + priceShipping;
   }, [totalAllPrice, priceShipping]);
 
+  const updataOrder = async () => {
+    const errors: {
+      order_recipient_name?: string;
+      recipient_phone?: string;
+      selectedCity?: string;
+      ward?: string;
+      street?: string;
+      isItem?: string;
+    } = {};
+
+    const address = `${street}, ${ward}, ${selectedCity}`;
+
+    if (!detailsOrder?.order_recipient_name.trim()) {
+      errors.order_recipient_name = "Tên người nhận không được để trống";
+    }
+
+    if (!detailsOrder?.recipient_phone.trim()) {
+      errors.recipient_phone = "Số điện thoại không được để trống";
+    } else if (!/^\d{9,11}$/.test(detailsOrder.recipient_phone)) {
+      errors.recipient_phone =
+        "Số điện thoại phải là số và có từ 9 đến 11 chữ số";
+    }
+
+    if (!street.trim()) {
+      errors.street = "Địa chỉ cụ thể không được để trống";
+    }
+
+    if (!ward.trim()) {
+      errors.ward = "Phường/Xã bắt buộc phải chọn";
+    }
+
+    if (!selectedCity.trim()) {
+      errors.selectedCity = "Tỉnh/Thành phố bắt buộc phải chọn";
+    }
+
+    if (!detailsOrder?.order_items || detailsOrder?.order_items.length === 0) {
+      errors.isItem = "Phải còn ít nhất 1 sản phẩm trong hóa đơn";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setErr(errors);
+      return;
+    }
+
+    const body = {
+      id: detailsOrder?.id,
+      shipping_address: address,
+      recipient_phone: detailsOrder?.recipient_phone ?? "",
+      order_recipient_name: detailsOrder?.order_recipient_name ?? "",
+      notes: detailsOrder?.notes ?? "",
+      delivery_method: detailsOrder?.delivery_method ?? "",
+      price_shipping: priceShipping,
+      status: detailsOrder?.status ?? "",
+      products: detailsOrder?.order_items.map((item) => ({
+        product_id: item.product.id,
+        quantity: item.quantity,
+      })),
+    };
+
+    if (tokenStoge) {
+      setLoading(true);
+      const res = await fetchUpdateOrderByAdmin({
+        formOder: body,
+        token: tokenStoge,
+        id: detailsOrder?.id!,
+      });
+      if (res.success) {
+        toast.success("Đã cập nhật hành công");
+        setDetailsOrder(res.data);
+      }
+      setLoading(false);
+    }
+  };
+
   if (loading) return <Loading />;
 
   return (
@@ -131,6 +261,17 @@ export default function DetailsOrderPage({
           onConfirm={handleRemoveItem}
         />
       )}
+
+      {showUpdateItem && (
+        <Modal
+          label={`Bạn có chắc muốn cập nhật hóa đơn`}
+          onClose={() => {
+            setShowUpdateItem(false);
+          }}
+          onConfirm={updataOrder}
+        />
+      )}
+
       <div className="">
         <div className="flex gap-4">
           <div className="flex-1 h-[calc(100vh-32px)] overflow-y-auto border-r border-gray-200 pr-3">
@@ -158,6 +299,11 @@ export default function DetailsOrderPage({
                     value={detailsOrder?.order_recipient_name!}
                     onChangeForm={onChange}
                   />
+                  {err.order_recipient_name && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {err.order_recipient_name}
+                    </p>
+                  )}
                 </div>
                 <div className=" flex-1 ">
                   <Input
@@ -167,20 +313,30 @@ export default function DetailsOrderPage({
                     value={detailsOrder?.recipient_phone!}
                     onChangeForm={onChange}
                   />
+                  {err.recipient_phone && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {err.recipient_phone}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="mb-[6px] block text-[#222] font-medium">
                 Đỉa chỉ giao hàng:
               </div>
-              <div className="flex flex-col sm:flex-row sm:gap-[22px] sm:items-center gap-[6px] ">
+              <div className="flex flex-col sm:flex-row sm:gap-[22px] sm:items-start gap-[6px] ">
                 <div className="flex-1">
                   <SearchableDropdown
                     label="Tỉnh/Thành phố "
                     placeholder="Chọn tỉnh/thành phố"
                     items={dataVn}
                     selected={selectedCity}
-                    setSelected={setSelectedCity}
+                    setSelected={handleSelectCity}
                   />
+                  {err.selectedCity && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {err.selectedCity}
+                    </p>
+                  )}
                 </div>
                 <div className="flex-1">
                   <SearchableDropdown
@@ -188,23 +344,37 @@ export default function DetailsOrderPage({
                     placeholder="Chọn phường/xã"
                     items={selectedWart || []}
                     selected={ward}
-                    setSelected={setWard}
+                    setSelected={handleSelectWard}
                   />
+                  {err.ward && (
+                    <p className="text-sm text-red-500 mt-1">{err.ward}</p>
+                  )}
                 </div>
               </div>
-              <Input
-                label="Địa chỉ cụ thể"
-                nameInput="street"
-                className="w-full"
-                value={street}
-                onChangeForm={onChange}
-              />
+              <div>
+                <Input
+                  label="Địa chỉ cụ thể"
+                  nameInput="street"
+                  className="w-full"
+                  value={street}
+                  onChangeForm={onChange}
+                />
+                {err.street && (
+                  <p className="text-sm text-red-500 mt-1">{err.street}</p>
+                )}
+              </div>
+
               <div className="mb-[4px] block text-[#222] font-medium">
                 Notes:
               </div>
               <textarea
                 cols={10}
-                value={detailsOrder?.notes}
+                value={detailsOrder?.notes ?? ""}
+                onChange={(e) =>
+                  setDetailsOrder((prev) =>
+                    prev ? { ...prev, notes: e.target.value } : prev
+                  )
+                }
                 className="p-3 shadow border border-[#ddd] focus:outline-none focus:shadow w-[100%]"
                 name="notes"
                 placeholder="Ghi chú của đơn hàng"
@@ -333,6 +503,9 @@ export default function DetailsOrderPage({
                   </div>
                 </div>
               </div>
+              {err.isItem && (
+                <p className="text-sm text-red-500 mt-1">{err.isItem}</p>
+              )}
             </div>
           </div>
           <div className="w-[500px]">
@@ -363,7 +536,7 @@ export default function DetailsOrderPage({
                 className="border-1 w-[300px] h-[50px] pl-[11px] pr-[22px] block mt-2"
               >
                 <option value={"padding"}>Đang xử lý</option>
-                <option value={"shipping"}>Đang đang giao hàng</option>
+                <option value={"shipping"}>Đang giao hàng</option>
                 <option value={"success"}>Thành công</option>
                 <option value={"cancel"}>Hủy đơn hàng</option>
               </select>
@@ -398,7 +571,7 @@ export default function DetailsOrderPage({
                 Làm mới
               </button>
               <button
-                onClick={() => router.push("/orders")}
+                onClick={() => setShowUpdateItem(true)}
                 className="px-3 py-2 bg-blue-500 rounded-md hover:bg-blue-600 cursor-pointer"
               >
                 Cập Nhật

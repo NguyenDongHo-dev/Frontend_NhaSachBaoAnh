@@ -20,13 +20,13 @@ export const isStates = (status: string) => {
     case "padding":
       str = "Đang xử lý";
       break;
-    case "in_transit":
+    case "shipping":
       str = "Đang giao hàng";
       break;
-    case "completed":
+    case "success":
       str = "Hoàn tất";
       break;
-    case "cancelled":
+    case "cancel":
       str = "Đã hủy";
       break;
     default:

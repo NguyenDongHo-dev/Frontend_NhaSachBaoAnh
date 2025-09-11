@@ -8,6 +8,7 @@ import {
 interface playLoatNew {
   token: string;
   formOder: any;
+  id?: number;
 }
 
 export const fetchCreateOrder = async ({
@@ -116,15 +117,32 @@ export const fetchAllOrderByAdmin = async ({
   token,
   page = 1,
   limit,
+  search,
+  typeSearch,
+  status,
 }: {
   token: string;
   page: number;
   limit: number;
+  search?: string;
+  typeSearch?: string;
+  status?: string;
 }): Promise<OderAllOderOfUser> => {
   const params: Record<string, string> = {
     limit: limit.toString(),
     page: page.toString(),
   };
+
+  if (search) {
+    params.search = search;
+  }
+  if (status) {
+    params.status = status;
+  }
+
+  if (typeSearch) {
+    params.typeSearch = typeSearch;
+  }
   const queryParams = new URLSearchParams(params);
 
   const res = await fetch(
@@ -172,4 +190,40 @@ export const fetchDetailByAdminOrder = async ({
   }
 
   return data;
+};
+
+export const fetchUpdateOrderByAdmin = async ({
+  formOder,
+  token,
+  id,
+}: playLoatNew): Promise<OderDetailsByUser> => {
+  const res = await fetch(`${process.env.API_SERVER}/api/order/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(formOder),
+  });
+  return res.json();
+};
+
+export const fetchCancelledByAdmin = async ({
+  token,
+  id,
+}: {
+  token: string;
+  id: number;
+}): Promise<OderDetailsByUser> => {
+  const res = await fetch(
+    `${process.env.API_SERVER}/api/order/cancelled/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return res.json();
 };

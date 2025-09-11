@@ -4,7 +4,7 @@ import Loading from "@/components/loading ";
 import { useAppSelector } from "@/hooks/redux";
 import { fetchDetailOrder } from "@/services/orderService";
 import { Order } from "@/types/order";
-import { formatPrice } from "@/utils";
+import { formatPrice, isStates } from "@/utils";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import NotFondComponent from "@/components/client/NotFond";
@@ -42,27 +42,6 @@ export default function DetailsOrderPage({
     };
     fetchApiDetailOrder();
   }, [id]);
-
-  const isStates = (status: string) => {
-    let str = "";
-    switch (status) {
-      case "padding":
-        str = "Đang xử lý";
-        break;
-      case "in_transit":
-        str = "Đang giao hàng";
-        break;
-      case "completed":
-        str = "Hoàn tất";
-        break;
-      case "cancelled":
-        str = "Đã hủy";
-        break;
-      default:
-        str = "Không xác định";
-    }
-    return str;
-  };
 
   if (notFound) return <NotFondComponent />;
   return (

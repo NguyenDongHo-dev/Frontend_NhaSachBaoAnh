@@ -6,7 +6,7 @@ import {
   fetchAllOrderOflUser,
   fetchDeleteOderOfUser,
 } from "@/services/orderService";
-import { formatDateVN, formatPrice } from "@/utils";
+import { formatDateVN, formatPrice, isStates } from "@/utils";
 import Image from "next/image";
 import Button from "@/components/client/Button";
 import Link from "next/link";
@@ -77,27 +77,6 @@ export default function AllOrderDetailUserPage() {
     };
     fetchApiDetailOrder();
   }, [page, tokenStoge]);
-
-  const isStates = (status: string) => {
-    let str = "";
-    switch (status) {
-      case "padding":
-        str = "Đang xử lý";
-        break;
-      case "in_transit":
-        str = "Đang giao hàng";
-        break;
-      case "completed":
-        str = "Hoàn tất";
-        break;
-      case "cancelled":
-        str = "Đã hủy";
-        break;
-      default:
-        str = "Không xác định";
-    }
-    return str;
-  };
 
   if (loading) {
     return <Loading />;

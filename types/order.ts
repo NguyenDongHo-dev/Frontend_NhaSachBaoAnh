@@ -1,8 +1,8 @@
 export interface Order {
   id: number;
   user_id: number;
-  order_number: string;
   shipping_address: string;
+  order_number: string;
   recipient_phone: string;
   order_recipient_name: string;
   delivery_method: string;

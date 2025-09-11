@@ -1,6 +1,6 @@
 export default function Loading() {
   return (
-    <div className=" z-50 flex items-center justify-center w-full h-full">
+    <div className=" fixed inset-0 z-50 flex items-center justify-center">
       <div role="status">
         <svg
           aria-hidden="true"

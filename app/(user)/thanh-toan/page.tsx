@@ -187,6 +187,7 @@ export default function PaymentPage() {
       shipping === 30000 ? "Giao hàng toàn quốc" : "Ship hỏa tốc"
     );
     formPost.append("notes", formPayment.nodes);
+
     cart.items.forEach((item, index) => {
       formPost.append(`products[${index}][product_id]`, item.id.toString());
       formPost.append(`products[${index}][quantity]`, item.quantity.toString());
