@@ -4,7 +4,7 @@ import Loading from "@/components/loading ";
 import { useAppSelector } from "@/hooks/redux";
 import { fetchDetailOrder } from "@/services/orderService";
 import { Order } from "@/types/order";
-import { formatPrice, isStates } from "@/utils";
+import { formatPrice, isStates, statusColors } from "@/utils";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import NotFondComponent from "@/components/client/NotFond";
@@ -121,7 +121,13 @@ export default function DetailsOrderPage({
                   </div>
                   <div>
                     <span className="font-bold ">Trạng thái:</span>{" "}
-                    <samp>{isStates(order?.status!)}</samp>
+                    <samp
+                      className={`font-semibold ${
+                        statusColors[order?.status!] || "text-gray-500"
+                      }`}
+                    >
+                      {isStates(order?.status!)}
+                    </samp>
                   </div>
                 </div>
               </div>

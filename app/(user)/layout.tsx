@@ -25,16 +25,18 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${QuicksandSans.variable} flex flex-col min-h-screen`}>
+      <body className={`${QuicksandSans.variable}`}>
         <ReduxProvider>
           <AppWrapper>
             <ToastContainerMain />
-            <Header />
-            <main className="flex-1 pt-[130px] pb-[100px]">
-              {children}
-              <Badge />
-            </main>
-            <Footer />
+            <div className=" flex flex-col h-screen">
+              <Header />
+              <main className="flex-1 pt-[130px] pb-[100px]">
+                {children}
+                <Badge />
+              </main>
+              <Footer />
+            </div>
           </AppWrapper>
         </ReduxProvider>
       </body>

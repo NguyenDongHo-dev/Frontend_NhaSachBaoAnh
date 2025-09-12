@@ -6,7 +6,7 @@ import {
   fetchAllOrderOflUser,
   fetchDeleteOderOfUser,
 } from "@/services/orderService";
-import { formatDateVN, formatPrice, isStates } from "@/utils";
+import { formatDateVN, formatPrice, isStates, statusColors } from "@/utils";
 import Image from "next/image";
 import Button from "@/components/client/Button";
 import Link from "next/link";
@@ -141,7 +141,13 @@ export default function AllOrderDetailUserPage() {
               </div>
               <div className=" flex items-center gap-1">
                 <div className="font-bold">Tình trang:</div>
-                <div>{isStates(item.status)}</div>
+                <div
+                  className={`font-semibold ${
+                    statusColors[item.status] || "text-gray-500"
+                  }`}
+                >
+                  {isStates(item.status)}
+                </div>
               </div>
               <div className=" flex items-center gap-1">
                 <div className="font-bold">Thanh toán :</div>
@@ -215,12 +221,18 @@ export default function AllOrderDetailUserPage() {
                     Tổng tiền {formatPrice(item?.total_all!)} đ
                   </div>
                   <div className="flex items-center gap-2 mt-1">
-                    <Button
-                      onClick={() => handlerRemoveOrder(item.id)}
-                      className="py-1 px-2 rounded-[4px] font-bold   "
-                    >
-                      Hủy đơn hàng
-                    </Button>
+                    {item.status !== "cancel" ? (
+                      <Button
+                        onClick={() => handlerRemoveOrder(item.id)}
+                        className="py-1 px-2 rounded-[4px] font-bold   "
+                      >
+                        Hủy đơn hàng
+                      </Button>
+                    ) : (
+                      <div className="py-1 px-2 rounded-[4px] font-bold border text-red-500 cursor-default">
+                        Đã hủy
+                      </div>
+                    )}
                     <Link href={`/order/${item.id}`}>
                       <Button className="py-1 px-2 bg-green-500 border-transparent text-white font-bold hover:bg-green-600 duration-200 transition-colors">
                         Xem chi tiết

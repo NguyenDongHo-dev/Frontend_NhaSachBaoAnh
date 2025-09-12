@@ -12,7 +12,7 @@ import {
 } from "@/services/orderService";
 import { Order } from "@/types/order";
 import { formatDateVN, formatPrice } from "@/utils";
-import { X } from "lucide-react";
+import { FileDown, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
@@ -51,6 +51,7 @@ export default function DetailsOrderPage({
     ward?: string;
     street?: string;
     isItem?: string;
+    isPaid?: string;
   }>({});
 
   useEffect(() => {
@@ -146,6 +147,13 @@ export default function DetailsOrderPage({
         status: value,
       });
     }
+
+    if (name === "paid") {
+      setDetailsOrder({
+        ...detailsOrder,
+        paid: Number(value),
+      });
+    }
   };
 
   const handleRemoveItem = () => {
@@ -180,6 +188,7 @@ export default function DetailsOrderPage({
       ward?: string;
       street?: string;
       isItem?: string;
+      isPaid?: string;
     } = {};
 
     const address = `${street}, ${ward}, ${selectedCity}`;
@@ -211,6 +220,11 @@ export default function DetailsOrderPage({
       errors.isItem = "Phải còn ít nhất 1 sản phẩm trong hóa đơn";
     }
 
+    if (detailsOrder?.paid === 1 && detailsOrder.status === "cancel") {
+      errors.isPaid =
+        "Đơn hàng đã hủy nên cập nhất đã thanh toán là không được";
+    }
+
     if (Object.keys(errors).length > 0) {
       setErr(errors);
       return;
@@ -225,6 +239,7 @@ export default function DetailsOrderPage({
       delivery_method: detailsOrder?.delivery_method ?? "",
       price_shipping: priceShipping,
       status: detailsOrder?.status ?? "",
+      paid: detailsOrder?.paid ?? 0,
       products: detailsOrder?.order_items.map((item) => ({
         product_id: item.product.id,
         quantity: item.quantity,
@@ -275,16 +290,26 @@ export default function DetailsOrderPage({
       <div className="">
         <div className="flex gap-4">
           <div className="flex-1 h-[calc(100vh-32px)] overflow-y-auto border-r border-gray-200 pr-3">
-            <h1 className="text-primary text-[1.1em] font-bold uppercase  ">
-              Chi tiết hóa đơn
-            </h1>
-            <div className="flex gap-1 items-center mt-2 ">
-              <div className="font-bold">Mã hóa đơn:</div>
-              <div>{detailsOrder?.order_number}</div>
-            </div>
-            <div className="flex gap-1 items-center mt-2 ">
-              <div className="font-bold">Ngày đặt đơn hàng:</div>
-              <div>{formatDateVN(detailsOrder?.created_at!)}</div>
+            <div>
+              <h1 className="text-primary text-[1.1em] font-bold uppercase  ">
+                Chi tiết hóa đơn
+              </h1>
+              <div className="flex gap-1 items-center mt-2 ">
+                <div className="font-bold">Mã hóa đơn:</div>
+                <div>{detailsOrder?.order_number}</div>
+              </div>
+              <div className="flex justify-between">
+                <div className="flex gap-1 items-center mt-2 ">
+                  <div className="font-bold">Ngày đặt đơn hàng:</div>
+                  <div>{formatDateVN(detailsOrder?.created_at!)}</div>
+                </div>
+                {detailsOrder?.paid === 1 && detailsOrder.paid_at && (
+                  <div className="flex gap-1 items-center mt-2 ">
+                    <div className="font-bold">Ngày thanh toán:</div>
+                    <div>{formatDateVN(detailsOrder?.paid_at!)}</div>
+                  </div>
+                )}
+              </div>
             </div>
             <h1 className=" text-[1em] text-primary font-bold uppercase mt-2 ">
               Thông tin người nhận hàng
@@ -557,6 +582,18 @@ export default function DetailsOrderPage({
               </div>
             </div>
 
+            <select
+              value={detailsOrder?.paid}
+              onChange={handleChangeSelect}
+              name="paid"
+              className="border-1 w-[300px] h-[50px] pl-[11px] pr-[22px] block mt-2"
+            >
+              <option value={0}>Chua thanh toán</option>
+              <option value={1}>Đã thanh toán</option>
+            </select>
+            {err.isPaid && (
+              <p className="text-sm text-red-500 mt-1">{err.isPaid}</p>
+            )}
             <div className="flex gap-4 mt-5">
               <button
                 onClick={() => router.push("/admin/orders")}

@@ -34,3 +34,10 @@ export const isStates = (status: string) => {
   }
   return str;
 };
+
+export const statusColors: Record<string, string> = {
+  padding: "text-yellow-500",
+  success: "text-green-600",
+  cancel: "text-red-500",
+  shipping: "text-blue-500",
+};
