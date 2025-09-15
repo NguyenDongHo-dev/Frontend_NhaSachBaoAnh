@@ -256,6 +256,8 @@ export default function DetailsOrderPage({
       if (res.success) {
         toast.success("Đã cập nhật hành công");
         setDetailsOrder(res.data);
+      } else {
+        toast.error(res.message);
       }
       setLoading(false);
     }
@@ -476,25 +478,45 @@ export default function DetailsOrderPage({
                               onClick={(type) => {
                                 if (type === "+") {
                                   const newQuantity = item.quantity + 1;
+
                                   const updatedItems =
-                                    detailsOrder.order_items.map((orderItem) =>
-                                      orderItem.product.id === item.product.id
-                                        ? {
+                                    detailsOrder.order_items.map(
+                                      (orderItem) => {
+                                        if (
+                                          orderItem.product.id ===
+                                          item.product.id
+                                        ) {
+                                          if (
+                                            newQuantity >
+                                            orderItem.product.stock
+                                          ) {
+                                            toast.error(
+                                              "Số lượng vượt quá tồn kho!"
+                                            );
+                                            return orderItem;
+                                          }
+
+                                          return {
                                             ...orderItem,
                                             quantity: newQuantity,
-                                          }
-                                        : orderItem
+                                          };
+                                        }
+                                        return orderItem;
+                                      }
                                     );
+
                                   setDetailsOrder({
                                     ...detailsOrder,
                                     order_items: updatedItems,
                                   });
                                 }
+
                                 if (type === "-") {
                                   const newQuantity = Math.max(
                                     1,
                                     item.quantity - 1
                                   );
+
                                   const updatedItems =
                                     detailsOrder.order_items.map((orderItem) =>
                                       orderItem.product.id === item.product.id
@@ -504,6 +526,7 @@ export default function DetailsOrderPage({
                                           }
                                         : orderItem
                                     );
+
                                   setDetailsOrder({
                                     ...detailsOrder,
                                     order_items: updatedItems,

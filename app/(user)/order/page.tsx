@@ -215,26 +215,37 @@ export default function AllOrderDetailUserPage() {
                   ))}
                 </div>
               </div>
-              <div className="flex justify-end mt-3">
-                <div className="flex flex-col gap-2 items-end">
-                  <div className="bg-yellow-100 p-1 rounded-md text-right font-bold text-primary text-lg">
-                    Tổng tiền {formatPrice(item?.total_all!)} đ
+              <div className="flex justify-end mt-4">
+                <div className="flex flex-col gap-3 items-end">
+                  <div className="bg-yellow-100 px-4 py-2 rounded-md text-right font-bold text-primary text-lg shadow-sm">
+                    Tổng tiền: {formatPrice(item?.total_all!)} đ
                   </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    {item.status !== "cancel" ? (
-                      <Button
+
+                  <div className="flex items-center gap-2">
+                    {item.status === "cancel" && (
+                      <span className="px-3 py-1 rounded-md font-semibold text-red-600 border border-red-400 bg-red-50">
+                        Đơn hàng đã hủy
+                      </span>
+                    )}
+
+                    {item.status === "success" && (
+                      <span className="px-3 py-1 rounded-md font-semibold text-green-700 border border-green-400 bg-green-50">
+                        Hoàn tất
+                      </span>
+                    )}
+
+                    {(item.status === "padding" ||
+                      item.status === "shipping") && (
+                      <button
                         onClick={() => handlerRemoveOrder(item.id)}
-                        className="py-1 px-2 rounded-[4px] font-bold   "
+                        className="px-3 py-1 cursor-pointer rounded-md font-semibold text-red-500 border border-red-400 hover:bg-red-500 hover:text-white transition-colors shadow-sm"
                       >
                         Hủy đơn hàng
-                      </Button>
-                    ) : (
-                      <div className="py-1 px-2 rounded-[4px] font-bold border text-red-500 cursor-default">
-                        Đã hủy
-                      </div>
+                      </button>
                     )}
+
                     <Link href={`/order/${item.id}`}>
-                      <Button className="py-1 px-2 bg-green-500 border-transparent text-white font-bold hover:bg-green-600 duration-200 transition-colors">
+                      <Button className="px-3 py-1 rounded-md bg-blue-500 border-transparent text-white font-semibold hover:bg-blue-600 transition-colors shadow-sm">
                         Xem chi tiết
                       </Button>
                     </Link>

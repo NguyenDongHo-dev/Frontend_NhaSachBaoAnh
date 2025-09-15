@@ -19,6 +19,7 @@ export interface Product {
   category: Category;
   created_at: string;
   updated_at: string;
+  total_reviews: number;
 }
 
 export interface ProductResponse {
@@ -27,6 +28,7 @@ export interface ProductResponse {
   limit?: number;
   current_page?: number;
   last_page?: number;
+  status?: number;
 }
 
 export interface ProductDetailsResponse {

@@ -7,11 +7,14 @@ import { Product } from "@/types/product";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { addItem } from "@/redux/slices/cartSlice";
+import { addItem, updateQuantity } from "@/redux/slices/cartSlice";
 import { useAppSelector } from "@/hooks/redux";
 import { formatPrice } from "@/utils";
+import ShowReview from "@/components/client/Review";
+import { GetReviews } from "@/types/review";
+import { toast } from "react-toastify";
 
 interface IProps {
   data: Product;
@@ -19,8 +22,8 @@ interface IProps {
 }
 
 interface similarProducts {
-  products?: Product[];
-  category?: Category;
+  products: Product[];
+  category: Category | null;
 }
 
 export default function DetailsProduct(props: IProps) {
@@ -42,13 +45,13 @@ export default function DetailsProduct(props: IProps) {
     }
   }, []);
 
-  const handleQuantity = (type: string) => {
-    setQuantity((prev) => {
-      if (type === "+") return prev + 1;
-      if (type === "-" && prev > 1) return prev - 1;
-      return prev;
-    });
-  };
+  // const handleQuantity = (type: string) => {
+  //   setQuantity((prev) => {
+  //     if (type === "+") return prev + 1;
+  //     if (type === "-" && prev > 1) return prev - 1;
+  //     return prev;
+  //   });
+  // };
 
   const OnImage = (type: string) => {
     if (type === "left") {
@@ -82,8 +85,23 @@ export default function DetailsProduct(props: IProps) {
     );
   };
 
+  const handleQuantity = (type: string, productId: number) => {
+    const item = cart.items.find((item) => item.id === productId);
+    if (!item) return;
+
+    const newQuantity =
+      type === "+" ? item.quantity + 1 : Math.max(1, item.quantity - 1);
+
+    dispatch(updateQuantity({ id: productId, quantity: newQuantity }));
+    if (cart.err) {
+      toast.error(
+        `Sản phẩm ${item.name} chỉ còn ${item.stock} nên ${cart.err}`
+      );
+    }
+  };
+
   return (
-    <div className="md:max-w-laptop md:mx-auto md:w-full px-[15px] md:mt-0 mt-[30px] ">
+    <div className="md:max-w-laptop md:mx-auto md:w-full px-[15px] md:mt-0 mt-[30px]">
       <div className="grid grid-cols-1 md:grid-cols-2 py-10 border-b gap-[40px]">
         <div className="relative">
           {data.discount > 0 && (
@@ -165,8 +183,17 @@ export default function DetailsProduct(props: IProps) {
             {data?.name}
           </h1>
           <div className="flex items-center gap-2">
-            <div>{data.rating}*</div>
-            <div>(1 danh giá)</div>
+            <div className="flex items-center gap-1">
+              {data.rating}
+              <span
+                className={`
+                  text-2xl leading-0
+                  text-yellow-500`}
+              >
+                ★
+              </span>
+            </div>
+            <div>({data.total_reviews} đánh giá)</div>
             <div className="w-[1px] h-3 bg-[rgb(199,199,199)]"></div>
             <div className="text-[rgb(120,120,120)] text-[14px]">
               Đã bán {data.sold | 0}
@@ -174,7 +201,7 @@ export default function DetailsProduct(props: IProps) {
           </div>
           <div className="flex items-center gap-2 ">
             {data.discount > 0 && (
-              <div className="flex items-center gap-1 text-[#111]">
+              <div className="flex items-center gap-1 text-[#111] line-through">
                 <div className="font-bold  opacity-60 text-[1.5em]">
                   {formatPrice(
                     Math.ceil(data.price / (1 - data.discount / 100) / 1000) *
@@ -186,28 +213,34 @@ export default function DetailsProduct(props: IProps) {
             )}
 
             <div className="flex items-center gap-1 text-primary">
-              <div className="font-bold  opacity-60 text-[1.5em]">
+              <div className="font-bold   text-[1.5em]">
                 {formatPrice(data.price)}
               </div>
               <samp className="align-top inline-block">đ</samp>
             </div>
           </div>
           <div dangerouslySetInnerHTML={{ __html: data.short_description }} />
-          <div className=" flex items-center gap-2 mt-2">
-            <Quantity_button
-              quantity={quantity}
-              setQuantity={setQuantity}
-              onClick={handleQuantity}
-            />
-            <div>
-              <Button
-                onClick={handleAddCart}
-                className=" bg-primary text-white text-[1em] font-semibold hover:bg-[#CC1212] py-2 px-[19px]"
-              >
-                Thêm vào giỏ hàng
-              </Button>
+          {data.stock > 0 ? (
+            <div className=" flex items-center gap-2 mt-2">
+              <Quantity_button
+                quantity={quantity}
+                setQuantity={setQuantity}
+                onClick={(type: string) => handleQuantity(type, data.id)}
+              />
+              <div>
+                <Button
+                  onClick={handleAddCart}
+                  className=" bg-primary text-white text-[1em] font-semibold hover:bg-[#CC1212] py-2 px-[19px]"
+                >
+                  Thêm vào giỏ hàng
+                </Button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-primary text-white py-2 px-3  w-fit rounded-[4px]">
+              Sản phẩm đã hết hàng
+            </div>
+          )}
         </div>
       </div>
       <div className="py-[30px] border-b">
@@ -230,15 +263,17 @@ export default function DetailsProduct(props: IProps) {
                 : "text-[hsla(0,0%,40%,.85)]  hover:text-[hsla(0,0%,7%,.85)]"
             } cursor-pointer uppercase md:w-auto py-[10px] inline-block w-full font-bold text-[.8em] px-[10px]  `}
           >
-            Đánh giá (0)
+            Đánh giá ({data?.total_reviews})
           </div>
         </div>
         <div className="pt-4">
-          {tap === 0 && (
+          <div hidden={tap !== 0}>
             <div dangerouslySetInnerHTML={{ __html: data.description }} />
-          )}
+          </div>
 
-          {tap === 1 && <div>Danh gia</div>}
+          <div hidden={tap !== 1}>
+            <ShowReview product={data} />
+          </div>
         </div>
       </div>
       <div className="py-[15px]">

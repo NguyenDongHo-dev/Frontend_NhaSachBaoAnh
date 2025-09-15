@@ -19,6 +19,7 @@ export interface Order {
     product: {
       id: number;
       name: string;
+      stock: number;
       image: {
         id: number;
         url: string;

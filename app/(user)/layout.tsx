@@ -29,9 +29,9 @@ export default async function RootLayout({
         <ReduxProvider>
           <AppWrapper>
             <ToastContainerMain />
-            <div className=" flex flex-col h-screen">
+            <div className="flex flex-col min-h-screen">
               <Header />
-              <main className="flex-1 pt-[130px] pb-[100px]">
+              <main className="flex-1 pt-[130px] pb-[100px] ">
                 {children}
                 <Badge />
               </main>

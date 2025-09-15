@@ -89,13 +89,17 @@ export default function Cart({ data }: IProps) {
               <MoveRight size={12} />
             </div>
           </Link>
-        ) : (
+        ) : data.stock > 0 ? (
           <Button
             onClick={handleAddToCart}
             className="text-primary border-primary hover:bg-primary px-[13px] py-1 hover:text-white text-[11px] font-bold"
           >
             Thêm vào giỏ hàng
           </Button>
+        ) : (
+          <div className="text-primary border-primary  py-1  text-[14px] font-bold cursor-default">
+            Đã hết hàng
+          </div>
         )}
       </div>
     </div>

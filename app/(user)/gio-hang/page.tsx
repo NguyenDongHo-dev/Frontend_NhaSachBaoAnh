@@ -16,6 +16,7 @@ import {
 import Modal from "@/components/client/Modal";
 import { useRouter } from "next/navigation";
 import { formatPrice } from "@/utils";
+import { toast } from "react-toastify";
 
 export default function page() {
   const dispatch = useAppDispatch();
@@ -52,6 +53,9 @@ export default function page() {
       type === "+" ? item.quantity + 1 : Math.max(1, item.quantity - 1);
 
     dispatch(updateQuantity({ id: productId, quantity: newQuantity }));
+    if (cart.err) {
+      toast.error(cart.err);
+    }
   };
 
   const removeCart = (id: number) => {

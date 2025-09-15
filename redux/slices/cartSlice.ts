@@ -58,7 +58,7 @@ const cartSlice = createSlice({
         const newQty = currentQty + action.payload.quantity;
 
         if (newQty > action.payload.stock) {
-          state.err = "Số lượng vượt quá tồn kho.";
+          state.err = "số lượng vượt quá tồn kho.";
           state.items[index].quantity = action.payload.stock;
         } else {
           state.items[index].quantity = newQty;
@@ -70,7 +70,7 @@ const cartSlice = createSlice({
             ...action.payload,
             quantity: action.payload.stock,
           });
-          state.err = "Số lượng vượt quá tồn kho.";
+          state.err = "số lượng vượt quá tồn kho.";
         } else {
           state.items.push(action.payload);
           state.err = "";
@@ -91,7 +91,7 @@ const cartSlice = createSlice({
       if (item) {
         if (action.payload.quantity > item.stock) {
           item.quantity = item.stock;
-          state.err = "Số lượng vượt quá tồn kho.";
+          state.err = "số lượng vượt quá tồn kho.";
         } else {
           item.quantity = action.payload.quantity;
           state.err = "";

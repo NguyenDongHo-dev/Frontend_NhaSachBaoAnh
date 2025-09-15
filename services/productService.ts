@@ -12,14 +12,17 @@ interface playLoatNew {
 
 export const fetchAllDetailsProduct = async (
   slug: string
-): Promise<ProductDetailsResponse> => {
+): Promise<ProductDetailsResponse | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/product/${slug}`, {
     // next: { revalidate: 3600 },
   });
 
-  if (!res.ok) throw new Error("Failed to fetch");
+  if (!res.ok) {
+    return null;
+  }
 
-  return res.json();
+  const data = await res.json();
+  return data;
 };
 
 export const fetchAllProduct = async ({
@@ -59,7 +62,13 @@ export const fetchAllProduct = async ({
     // }
   );
 
-  if (!res.ok) throw new Error("Failed to fetch");
+  const data = await res.json();
+
+  if (!res.ok) {
+    return { ...data, status: res.status };
+  }
+
+  return data;
 
   return res.json();
 };

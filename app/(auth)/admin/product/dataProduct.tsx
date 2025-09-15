@@ -96,10 +96,13 @@ export default function DataProduct({
               <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-full ">
                 Tên sản phẩm
               </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px]">
+              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px] text-center">
                 Giá
               </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px]">
+              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50  w-[100px]  text-center">
+                Tồn kho
+              </th>
+              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px] text-center">
                 Danh mục
               </th>
               <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[80px] text-center">
@@ -138,10 +141,19 @@ export default function DataProduct({
                     </div>
                   </div>
                 </td>
-                <td className=" p-1 border-b border-blue-gray-50  ">
+                <td className=" p-1 border-b border-blue-gray-50 text-center ">
                   {item.price}
                 </td>
-                <td className=" p-1 border-b border-blue-gray-50 ">
+                <td
+                  className={`p-1 border-b border-blue-gray-50 w-[100px] text-center ${
+                    item.stock <= 5
+                      ? "text-red-500 border-black  "
+                      : "text-black"
+                  } `}
+                >
+                  {item.stock}
+                </td>
+                <td className=" p-1 border-b border-blue-gray-50 text-center">
                   {item.category.name}
                 </td>
                 <td className="p-1  border-b border-blue-gray-50 text-center align-middle  w-[80px]">
