@@ -10,6 +10,7 @@ import { LogOut } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/slices/userSlice";
 import SearchHeader from "./SearchHeader";
+import { fetchLogin, fetchLogoutUser } from "@/services/userService";
 
 interface NavBarProps {
   data: Category[];
@@ -86,10 +87,10 @@ function NavBar({ data }: NavBarProps) {
                   {user.user?.email}
                 </div>
                 <button
-                  onClick={() => {
+                  onClick={async () => {
                     dispatch(logout());
                     setShowNavbar(false);
-                    localStorage.removeItem("refresh_Token");
+                    await fetchLogoutUser();
                   }}
                   className="font-medium inline-block hover:bg-[#CC1212]  cursor-pointer uppercase p-3 text-white bg-primary rounded-full  "
                 >

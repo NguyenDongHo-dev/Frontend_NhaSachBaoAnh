@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { logout } from "@/redux/slices/userSlice";
 import { useRouter } from "next/navigation";
+import { fetchLogoutUser } from "@/services/userService";
 
 export default function CartHeader() {
   const router = useRouter();
@@ -29,13 +30,11 @@ export default function CartHeader() {
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-
-    localStorage.removeItem("refresh_Token");
-    setShow(false);
-    timerRef.current = null;
+  const handleLogout = async () => {
     router.push("/");
+    await fetchLogoutUser();
+    dispatch(logout());
+    setShow(false);
   };
 
   return (

@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 export default function ProfilePgae() {
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const tokenStoge = localStorage.getItem("refresh_Token");
+
   const user = useAppSelector((state) => state.user);
   const [form, setForm] = useState<User>({
     id: 0,
@@ -53,10 +53,10 @@ export default function ProfilePgae() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (!tokenStoge) {
+      if (!user.token && !user.isLoggedIn) {
         router.push("/dang-nhap");
       } else {
-        const res = await fetchDetailUser(tokenStoge);
+        const res = await fetchDetailUser({ token: user.token });
         dispatch(setUser({ user: res.data }));
       }
     };
@@ -80,7 +80,7 @@ export default function ProfilePgae() {
   }, [user.user]);
 
   const OnUpdateUser = async () => {
-    if (tokenStoge) {
+    if (user.token && user.isLoggedIn) {
       const address = `${street}, ${ward}, ${selectedCity}`;
 
       if (form.phone) {
@@ -96,7 +96,7 @@ export default function ProfilePgae() {
           ...form,
           address,
         },
-        token: tokenStoge,
+        token: user.token,
       });
       setLoading(false);
       if (res.success) {

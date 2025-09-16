@@ -6,6 +6,7 @@ import Quantity_button from "@/components/client/Quantity_button";
 import SearchableDropdown from "@/components/client/SearchableDropdown";
 import Loading from "@/components/loading ";
 import { dataVn } from "@/data";
+import { useAppSelector } from "@/hooks/redux";
 import {
   fetchDetailByAdminOrder,
   fetchUpdateOrderByAdmin,
@@ -23,9 +24,9 @@ export default function DetailsOrderPage({
 }: {
   params: Promise<{ id: number }>;
 }) {
+  const user = useAppSelector((state) => state.user);
   const { id } = React.use(params);
   const router = useRouter();
-  const tokenStoge = localStorage.getItem("refresh_Token");
   const [detailsOrder, setDetailsOrder] = useState<Order>();
   const [loading, setLoading] = useState(false);
 
@@ -64,10 +65,10 @@ export default function DetailsOrderPage({
 
   const fetchDetailOrderAdmin = async () => {
     setErr({});
-    if (tokenStoge) {
+    if (user.token && user.isLoggedIn) {
       setLoading(true);
       const res = await fetchDetailByAdminOrder({
-        token: tokenStoge,
+        token: user.token,
         idOrder: id,
       });
       if (res.success) {
@@ -246,11 +247,11 @@ export default function DetailsOrderPage({
       })),
     };
 
-    if (tokenStoge) {
+    if (user.token && user.isLoggedIn) {
       setLoading(true);
       const res = await fetchUpdateOrderByAdmin({
         formOder: body,
-        token: tokenStoge,
+        token: user.token,
         id: detailsOrder?.id!,
       });
       if (res.success) {

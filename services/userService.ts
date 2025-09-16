@@ -25,10 +25,12 @@ export const fetchLogin = async (
 ): Promise<APIResponse> => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/login`, {
     method: "POST",
+
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
+    credentials: "include",
     body: JSON.stringify(payload),
   });
 
@@ -110,12 +112,17 @@ export const fetchUpdateUserByAdmin = async ({
   return data;
 };
 
-export const fetchDetailUser = async (token: string): Promise<APIResponse> => {
+export const fetchDetailUser = async ({
+  token,
+}: {
+  token: string;
+}): Promise<APIResponse> => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/details`, {
     method: "GET",
+
     headers: {
-      Authorization: `Bearer ${token}`,
       Accept: "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 
@@ -233,6 +240,25 @@ export const fetchUpdateUser = async ({
       body: JSON.stringify(form),
     }
   );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    return { ...data, status: res.status };
+  }
+
+  return data;
+};
+
+export const fetchLogoutUser = async () => {
+  const res = await fetch(`${process.env.API_SERVER}/api/user/logout`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+  });
 
   const data = await res.json();
 

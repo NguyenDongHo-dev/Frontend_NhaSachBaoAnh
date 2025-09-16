@@ -154,7 +154,7 @@ export default function SearchHeader() {
         </div>
       )}
 
-      <div className="size-[34px] flex items-center justify-center bg-primary absolute right-0 top-1/2 -translate-y-1/2">
+      <div className="size-[34px] cursor-pointer flex items-center justify-center bg-primary absolute right-0 top-1/2 -translate-y-1/2 hover:bg-[#CC1212]  transition-all duration-300">
         {loading ? (
           <Loader2 size={18} className="animate-spin text-white" />
         ) : (

@@ -3,6 +3,7 @@ import Input from "@/components/client/Input";
 import Modal from "@/components/client/Modal";
 import Pagination from "@/components/client/Pagination";
 import Loading from "@/components/loading ";
+import { useAppSelector } from "@/hooks/redux";
 import { fetchCancelledByAdmin } from "@/services/orderService";
 import { OderAllOderOfUser, Order } from "@/types/order";
 import { formatDateVN, formatPrice, isStates } from "@/utils";
@@ -17,9 +18,9 @@ interface Props {
 }
 
 export default function RenderDataOrders({ dataRer, loading }: Props) {
+  const user = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
   const router = useRouter();
-  const tokenStoge = localStorage.getItem("refresh_Token");
   const [orders, setOrders] = useState<Order[]>(dataRer?.data ?? []);
 
   const searchType = searchParams.get("typeSearch") || "all";
@@ -37,9 +38,9 @@ export default function RenderDataOrders({ dataRer, loading }: Props) {
   }, [dataRer]);
 
   const cancelledOrder = async () => {
-    if (tokenStoge) {
+    if (user.token && user.isLoggedIn) {
       const res = await fetchCancelledByAdmin({
-        token: tokenStoge,
+        token: user.token,
         id: idCancelled!,
       });
       if (res.success) {

@@ -62,15 +62,10 @@ export const fetchAllProduct = async ({
     // }
   );
 
+  if (!res.ok) throw new Error("Failed to fetch");
+
   const data = await res.json();
-
-  if (!res.ok) {
-    return { ...data, status: res.status };
-  }
-
   return data;
-
-  return res.json();
 };
 
 export const fetchNewProduct = async ({

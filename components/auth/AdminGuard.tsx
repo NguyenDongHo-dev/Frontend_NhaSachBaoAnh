@@ -1,8 +1,9 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import { useAppSelector } from "@/hooks/redux";
 
 interface MyJwtPayload {
   role: number;
@@ -10,36 +11,39 @@ interface MyJwtPayload {
 }
 
 export default function AdminGuard({ children }: { children: ReactNode }) {
+  const user = useAppSelector((state) => state.user);
   const router = useRouter();
+  const pathname = usePathname();
+
   const [authorized, setAuthorized] = useState(false);
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
     const checkToken = () => {
       try {
-        const token = localStorage.getItem("refresh_Token");
-        if (!token) {
-          router.replace("/");
+        if (!user.token || !user.isLoggedIn) {
+          if (pathname !== "/") router.replace("/");
           return;
         }
 
-        const { role, type } = jwtDecode<MyJwtPayload>(token);
-        if (role === 1 && type === "refresh") {
+        const { role } = jwtDecode<MyJwtPayload>(user.token);
+
+        if (role === 1) {
           setAuthorized(true);
         } else {
-          router.replace("/");
+          if (pathname !== "/") router.replace("/");
         }
       } catch (error) {
-        router.replace("/");
+        if (pathname !== "/") router.replace("/");
       } finally {
         setChecked(true);
       }
     };
 
     checkToken();
-  }, [router]);
+  }, [user.token, user.isLoggedIn, router, pathname]);
 
-  if (!checked) return null; 
+  if (!checked) return null;
   if (!authorized) return null;
 
   return <>{children}</>;

@@ -110,8 +110,6 @@ export default function page() {
       const decoded = jwtDecode<TokenPayload>(dataRes.token);
       const { role } = decoded;
 
-      localStorage.setItem("refresh_Token", dataRes.refresh_Token || "");
-
       dispatch(
         loginSuccess({
           user: { ...dataRes.data, role },

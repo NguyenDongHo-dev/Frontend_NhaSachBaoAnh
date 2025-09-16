@@ -19,8 +19,6 @@ export default function PaymentPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const tokenStoge = localStorage.getItem("refresh_Token");
-
   const [street, setStreet] = useState("");
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [selectedWart, setSelectedWart] = useState<
@@ -116,7 +114,7 @@ export default function PaymentPage() {
 
   //check is Login
   useEffect(() => {
-    if (!tokenStoge) {
+    if (!user.token || !user.isLoggedIn) {
       router.push("/");
     }
   }, [dispatch, router]);

@@ -14,11 +14,11 @@ export default function DetailsOrderPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const user = useAppSelector((state) => state.user);
   const { id } = React.use(params);
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState<Order>();
   const isFirstLoad = useRef(false);
-  const tokenStoge = localStorage.getItem("refresh_Token");
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
@@ -26,10 +26,10 @@ export default function DetailsOrderPage({
     isFirstLoad.current = true;
     const fetchApiDetailOrder = async () => {
       setLoading(true);
-      if (tokenStoge) {
+      if (user.token) {
         const res = await fetchDetailOrder({
           idOrder: Number(id),
-          token: tokenStoge,
+          token: user.token,
         });
         if (res.status === 404) {
           setNotFound(true);

@@ -7,10 +7,11 @@ import { useEffect, useState } from "react";
 import RenderDataOrders from "./renderDataOrders";
 import Loading from "@/components/loading ";
 import { useDebounce } from "@/hooks/useDebounce";
+import { useAppSelector } from "@/hooks/redux";
 
 export default function OrderAdminPage() {
+  const user = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
-  const tokenStoge = localStorage.getItem("refresh_Token");
   const limit = 20;
   const [loading, setLoading] = useState(false);
   const page = Number(searchParams.get("page") || 1);
@@ -25,9 +26,9 @@ export default function OrderAdminPage() {
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
-      if (tokenStoge) {
+      if (user.token && user.isLoggedIn) {
         const res = await fetchAllOrderByAdmin({
-          token: tokenStoge,
+          token: user.token,
           limit,
           page,
           search: debounce,

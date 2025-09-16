@@ -16,6 +16,7 @@ import { useSearchParams } from "next/navigation";
 import Modal from "@/components/client/Modal";
 import { toast } from "react-toastify";
 import NotFondComponent from "@/components/client/NotFond";
+import { useAppSelector } from "@/hooks/redux";
 
 interface OrderResponse {
   data?: Order[];
@@ -26,8 +27,8 @@ interface OrderResponse {
 }
 
 export default function AllOrderDetailUserPage() {
+  const user = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
-  const tokenStoge = localStorage.getItem("refresh_Token");
   const [allOder, setAllOder] = useState<OrderResponse>();
   const [loading, setLoading] = useState(false);
   const [showModalRemove, setShowModalRemove] = useState(false);
@@ -37,7 +38,7 @@ export default function AllOrderDetailUserPage() {
   const [notFound, setNotFound] = useState(false);
   const limit = 10;
 
-  if (!tokenStoge) {
+  if (!user.token || !user.isLoggedIn) {
     return (
       <div className="flex items-center justify-center h-[300px]">
         <div className="flex flex-col gap-2">
@@ -55,12 +56,12 @@ export default function AllOrderDetailUserPage() {
   }
 
   useEffect(() => {
-    if (!tokenStoge) return;
+    if (!user.token && !user.isLoggedIn) return;
     const fetchApiDetailOrder = async () => {
       setLoading(true);
-      if (tokenStoge) {
+      if (user.token && user.isLoggedIn) {
         const res = await fetchAllOrderOflUser({
-          token: tokenStoge,
+          token: user.token,
           limit,
           page,
         });
@@ -76,7 +77,7 @@ export default function AllOrderDetailUserPage() {
       }
     };
     fetchApiDetailOrder();
-  }, [page, tokenStoge]);
+  }, [page, user.token]);
 
   if (loading) {
     return <Loading />;
@@ -95,7 +96,7 @@ export default function AllOrderDetailUserPage() {
     if (selectedId) {
       const res = await fetchDeleteOderOfUser({
         id: selectedId,
-        token: tokenStoge,
+        token: user.token,
       });
       if (res.success) {
         toast.success("Đã xóa đơn hàng hành công");
