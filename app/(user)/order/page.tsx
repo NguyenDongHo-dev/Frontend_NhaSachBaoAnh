@@ -56,7 +56,7 @@ export default function AllOrderDetailUserPage() {
   }
 
   useEffect(() => {
-    if (!user.token && !user.isLoggedIn) return;
+    if (!user.token || !user.isLoggedIn) return;
     const fetchApiDetailOrder = async () => {
       setLoading(true);
       if (user.token && user.isLoggedIn) {

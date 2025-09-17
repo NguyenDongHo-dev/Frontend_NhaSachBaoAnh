@@ -53,7 +53,7 @@ export default function ProfilePgae() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (!user.token && !user.isLoggedIn) {
+      if (!user.token || !user.isLoggedIn) {
         router.push("/dang-nhap");
       } else {
         const res = await fetchDetailUser({ token: user.token });
