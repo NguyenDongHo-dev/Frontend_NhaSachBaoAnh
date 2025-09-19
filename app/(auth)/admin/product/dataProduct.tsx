@@ -12,6 +12,8 @@ import { useSearchParams } from "next/navigation";
 import { fetchAllProduct, fetchDeleteProduct } from "@/services/productService";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useAppSelector } from "@/hooks/redux";
+import Loading from "@/components/loading ";
+import { toast } from "react-toastify";
 
 export default function DataProduct({
   dataProduct,
@@ -33,9 +35,11 @@ export default function DataProduct({
 
   const [ellipsis, setEllipsis] = useState<number | null>();
   const [product, setProduct] = useState<Product[]>(dataProduct);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const requestProduct = async () => {
+      setLoading(true);
       const res = await fetchAllProduct({
         page,
         limit,
@@ -44,8 +48,11 @@ export default function DataProduct({
         categoryId,
         searchName: debounce,
       });
-      const { data } = res;
-      setProduct(data);
+      if (res) {
+        const { data } = res;
+        setProduct(data);
+      }
+      setLoading(false);
     };
     requestProduct();
   }, [categoryId, status, page, sort, debounce]);
@@ -72,11 +79,13 @@ export default function DataProduct({
     const { success } = await fetchDeleteProduct({ id, token: user.token });
     if (success) {
       setProduct((pew) => pew.filter((p) => p.id !== id));
+      toast.success("Xóa thành công");
     }
   };
 
   return (
     <div className="">
+      {loading && <Loading />}
       <div className="py-[10px] flex justify-between ">
         <RequestProduct />
 
@@ -89,28 +98,14 @@ export default function DataProduct({
       <div className="relative flex flex-col w-full h-full  text-gray-700 bg-white shadow-md rounded-xl bg-clip-border">
         <table className="w-full text-left table-fixed">
           <thead>
-            <tr>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px] text-center">
-                Hình ảnh
-              </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-full ">
-                Tên sản phẩm
-              </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px] text-center">
-                Giá
-              </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50  w-[100px]  text-center">
-                Tồn kho
-              </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px] text-center">
-                Danh mục
-              </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[80px] text-center">
-                Status
-              </th>
-              <th className="p-2 border-b border-blue-gray-100 bg-blue-gray-50 w-[200px] text-center">
-                Action
-              </th>
+            <tr className="bg-gray-100 text-gray-700 border-b">
+              <th className="p-3 text-center  w-[200px] ">Hình ảnh</th>
+              <th className="p-3 text-center  w-full ">Tên sản phẩm</th>
+              <th className="p-3 text-center  w-[200px] ">Giá</th>
+              <th className="p-3 text-center  w-[100px] ">Tồn kho</th>
+              <th className="p-3 text-center  w-[200px] ">Danh mục</th>
+              <th className="p-3 text-center  w-[80px] ">Status</th>
+              <th className="p-3 text-center  w-[200px]">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -124,8 +119,13 @@ export default function DataProduct({
               </tr>
             )}
             {product?.map((item, index) => (
-              <tr key={item.id} className="w-full">
-                <td className=" p-1 border-b border-blue-gray-50 flex justify-center  w-[200px]">
+              <tr
+                key={item.id}
+                className={`w-full hover:bg-blue-50 ${
+                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                }`}
+              >
+                <td className=" p-2  flex justify-center  w-[200px]">
                   <Image
                     className="object-contain"
                     alt={`${item.name}`}
@@ -134,18 +134,16 @@ export default function DataProduct({
                     src={`${process.env.API_SERVER}/${item.image[0].url}`}
                   />
                 </td>
-                <td className=" px-1 p-1 border-b border-blue-gray-50 w-full ">
+                <td className=" p-2  w-full ">
                   <div>
                     <div className="flex items-center  ">
                       <div className="line-clamp-2 ">{item.name}</div>
                     </div>
                   </div>
                 </td>
-                <td className=" p-1 border-b border-blue-gray-50 text-center ">
-                  {item.price}
-                </td>
+                <td className=" p-2  text-center ">{item.price}</td>
                 <td
-                  className={`p-1 border-b border-blue-gray-50 w-[100px] text-center ${
+                  className={`p-2  w-[100px] text-center ${
                     item.stock <= 5
                       ? "text-red-500 border-black  "
                       : "text-black"
@@ -153,10 +151,8 @@ export default function DataProduct({
                 >
                   {item.stock}
                 </td>
-                <td className=" p-1 border-b border-blue-gray-50 text-center">
-                  {item.category.name}
-                </td>
-                <td className="p-1  border-b border-blue-gray-50 text-center align-middle  w-[80px]">
+                <td className=" p-2  text-center">{item.category.name}</td>
+                <td className="p-2   text-center align-middle  w-[80px]">
                   <div
                     className={`${
                       item.status ? "bg-green-500" : "bg-red-500"
@@ -165,7 +161,7 @@ export default function DataProduct({
                     {item.status ? "Hoạt động" : "Ẩn"}
                   </div>
                 </td>
-                <td className="border-b border-blue-gray-50 text-center relative  w-[200px]">
+                <td className=" text-center relative  w-[200px]">
                   <div
                     ref={menuRef}
                     className="flex flex-col gap-1 items-center"

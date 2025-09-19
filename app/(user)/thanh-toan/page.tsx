@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { clearCart, updateShip } from "@/redux/slices/cartSlice";
 import { fetchCreateOrder } from "@/services/orderService";
 import { formatPrice } from "@/utils";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -16,6 +16,7 @@ export default function PaymentPage() {
   const cart = useAppSelector((state) => state.cart);
   const user = useAppSelector((state) => state.user);
 
+  const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -82,10 +83,10 @@ export default function PaymentPage() {
   }, [shipping, dispatch]);
 
   useEffect(() => {
-    if (cart.items.length === 0) {
+    if (cart.items.length === 0 && pathname === "/thanh-toan") {
       router.push("/gio-hang");
     }
-  }, [cart.items.length, router]);
+  }, [router]);
 
   useEffect(() => {
     if (user.user) {
@@ -196,9 +197,9 @@ export default function PaymentPage() {
       formOder: formPost,
     });
     if (res?.success) {
-      dispatch(clearCart());
       toast.success("Bạn đã đặt hàng thành công");
-      router.push(`{/order/${res.order_id}}`);
+      router.push(`/order/${res.order_id}`);
+      dispatch(clearCart());
     } else {
       toast.error("Đã xảy ra lỗi hãy thử lại");
     }

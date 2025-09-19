@@ -12,7 +12,7 @@ import { useAppSelector } from "@/hooks/redux";
 export default function OrderAdminPage() {
   const user = useAppSelector((state) => state.user);
   const searchParams = useSearchParams();
-  const limit = 20;
+  const limit = 10;
   const [loading, setLoading] = useState(false);
   const page = Number(searchParams.get("page") || 1);
 

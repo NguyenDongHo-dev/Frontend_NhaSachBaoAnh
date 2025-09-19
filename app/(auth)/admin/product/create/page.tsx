@@ -77,7 +77,7 @@ export default function createProductPage() {
     }));
     setErr((prev) => ({
       ...prev,
-      [name]: undefined,
+      category: undefined,
     }));
   };
 
@@ -140,7 +140,7 @@ export default function createProductPage() {
     formData.append("name", form.name);
     formData.append("description", form.description);
     formData.append("short_description", form.short_description);
-    formData.append("discount", String(form.discount));
+    formData.append("discount", String(form.discount || 0));
     formData.append("price", String(form.price));
     formData.append("category_id", String(form.category_id));
     formData.append("status", String(form.status));
@@ -155,9 +155,20 @@ export default function createProductPage() {
       form: formData,
     });
 
+    console.log(res);
+
     if (res?.success) {
       toast.success("Tạo sản phẩm thành công");
       route.push("/admin/product");
+    }
+    if (!res?.success && res?.errors) {
+      console.log(123);
+
+      Object.values(res.errors).forEach((errArray) => {
+        if (Array.isArray(errArray)) {
+          toast.error(errArray[0]);
+        }
+      });
     }
   };
 
@@ -214,8 +225,11 @@ export default function createProductPage() {
             <select
               onChange={onChangeSelect}
               name="category_id"
+              defaultValue={categories[0]?.id}
+              value={form.category_id}
               className="h-[40px] px-3 border border-gray-300 rounded-md w-[300px]"
             >
+              <option value={""}>---Chọn danh mục---</option>
               {categories.map((item) => {
                 return (
                   <option key={item.id} value={item.id}>

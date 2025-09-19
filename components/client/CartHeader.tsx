@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import CartNav from "./CartNav";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { logout } from "@/redux/slices/userSlice";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { fetchLogoutUser } from "@/services/userService";
 
 export default function CartHeader() {
+  const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -17,11 +18,43 @@ export default function CartHeader() {
   const [show, setShow] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const currentPath = pathname;
+  const publicRoutes = [
+    "/",
+    "/dang-nhap",
+    "/dang-ki",
+    "/danh-muc-san-pham",
+    "gio-hang",
+    "san-pham",
+    "cua-hang",
+  ];
+
   const startCloseTimer = () => {
     timerRef.current = setTimeout(() => {
       setShow(false);
     }, 4000);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target as Node)
+      ) {
+        setShow(false);
+      }
+    };
+
+    if (show) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [show]);
 
   const clearCloseTimer = () => {
     if (timerRef.current) {
@@ -31,8 +64,13 @@ export default function CartHeader() {
   };
 
   const handleLogout = async () => {
-    router.push("/");
     await fetchLogoutUser();
+    const isPublic = publicRoutes.some((path) => currentPath.startsWith(path));
+
+    if (!isPublic) {
+      router.push("/");
+    }
+
     dispatch(logout());
     setShow(false);
   };

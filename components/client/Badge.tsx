@@ -34,6 +34,7 @@ export default function Badge() {
   }, [totalQuantity, pathname]);
 
   const prevQuantity = useRef(totalQuantity);
+
   useEffect(() => {
     if (totalQuantity > prevQuantity.current) {
       if (pathname !== "/gio-hang") {

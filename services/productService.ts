@@ -81,10 +81,11 @@ export const fetchNewProduct = async ({
     body: form,
   });
 
-  if (!res.ok) return null;
-
   const data = await res.json();
-  return data;
+  return {
+    success: res.ok,
+    ...data,
+  };
 };
 
 export const fetchDeleteProduct = async ({

@@ -6,9 +6,10 @@ import Loading from "@/components/loading ";
 import { useAppSelector } from "@/hooks/redux";
 import { fetchCancelledByAdmin } from "@/services/orderService";
 import { OderAllOderOfUser, Order } from "@/types/order";
-import { formatDateVN, formatPrice, isStates } from "@/utils";
+import { formatDateVN, formatPrice, isStates, statusColors } from "@/utils";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { it } from "node:test";
 import { SelectHTMLAttributes, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -183,7 +184,7 @@ export default function RenderDataOrders({ dataRer, loading }: Props) {
                       key={item.id}
                       className={`${i % 2 === 0 ? "bg-white" : "bg-gray-50"}
                
-                hover:bg-blue-50  b  `}
+                hover:bg-blue-50    `}
                     >
                       <td
                         className={`p-2 text-center font-medium duration-200  transition-colors  ${
@@ -226,7 +227,11 @@ export default function RenderDataOrders({ dataRer, loading }: Props) {
                       <td className="p-2 text-center text-gray-600">
                         {formatDateVN(item.created_at)}
                       </td>
-                      <td className="p-2 text-center text-gray-600">
+                      <td
+                        className={`p-2 text-center  ${
+                          statusColors[item.status]
+                        }`}
+                      >
                         {isStates(item.status)}
                       </td>
                       <td className="p-2 text-center font-bold text-primary">

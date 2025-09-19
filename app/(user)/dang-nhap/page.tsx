@@ -9,6 +9,7 @@ import { UserResponse, UserResponseOne } from "@/types/user";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/redux/slices/userSlice";
 import { jwtDecode } from "jwt-decode";
+import { useAppSelector } from "@/hooks/redux";
 
 interface FormData {
   email: string;
@@ -35,6 +36,7 @@ interface TokenPayload {
 export default function page() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const user = useAppSelector((state) => state.user);
   const [err, setErr] = useState<IErr>({});
   const [form, setForm] = useState<FormData>({
     email: "",
@@ -54,6 +56,16 @@ export default function page() {
     token: "",
     message: "",
   });
+
+  useEffect(() => {
+    if (user.token || user.isLoggedIn) {
+      router.replace("/");
+    }
+  }, [router]);
+
+  if (user.token || user.isLoggedIn) {
+    return null;
+  }
 
   const validateForm = ({ email, password }: FormData): ValidationErrors => {
     const errors: ValidationErrors = {};

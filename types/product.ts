@@ -34,4 +34,7 @@ export interface ProductResponse {
 export interface ProductDetailsResponse {
   data: Product;
   success?: boolean;
+  errors?: {
+    name?: string[];
+  };
 }
