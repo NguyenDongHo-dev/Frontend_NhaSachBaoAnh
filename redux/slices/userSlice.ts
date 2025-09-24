@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
   user: User | null;
-  token: string;
+  token: string | null;
   isLoggedIn: boolean;
 }
 

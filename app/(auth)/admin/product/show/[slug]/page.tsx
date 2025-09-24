@@ -1,4 +1,5 @@
 import Input from "@/components/client/Input";
+import NotFondComponent from "@/components/client/NotFond";
 import { fetchAllDetailsProduct } from "@/services/productService";
 import Image from "next/image";
 
@@ -10,6 +11,10 @@ export default async function showDetailspage({
   const { slug } = await params;
 
   const res = await fetchAllDetailsProduct(slug);
+  if (!res) {
+    return <NotFondComponent />;
+  }
+
   const { data } = res;
 
   return (
@@ -97,6 +102,7 @@ export default async function showDetailspage({
               <Image
                 src={`${process.env.API_SERVER}/${src.url}`}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 alt={`preview-${index}`}
                 className="object-cover rounded border"
               />

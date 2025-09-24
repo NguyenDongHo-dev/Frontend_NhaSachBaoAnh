@@ -1,6 +1,6 @@
 import { getProductsByCategory } from "@/services/categoryService";
-import ProductList from "./productList";
 import NotFondComponent from "@/components/client/NotFond";
+import ProductListPage from "./productList";
 
 export default async function PageCategory({
   params,
@@ -20,7 +20,7 @@ export default async function PageCategory({
 
   return (
     <div className="md:mt-0 mt-[30px] pt-5  max-w-laptop mx-auto md:max-w-laptop md:mx-auto w-full px-[15px]">
-      <ProductList slug={slug} dataRer={data} />
+      <ProductListPage slug={slug} dataRer={data} />
     </div>
   );
 }

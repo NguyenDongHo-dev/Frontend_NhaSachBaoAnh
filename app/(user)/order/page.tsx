@@ -184,6 +184,7 @@ export default function AllOrderDetailUserPage() {
                         <div className="relative size-[80px] min-w-[80px] bg-gray-200 ">
                           <Image
                             fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             alt={`${details.product.name}`}
                             src={`${process.env.API_SERVER}/${details.product.image[0]}`}
                             className="object-cover"

@@ -121,6 +121,7 @@ export default function SearchHeader() {
                     <Image
                       src={`${process.env.API_SERVER}/${item.image[0].url}`}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       alt={item.name}
                       className="object-contain"
                     />

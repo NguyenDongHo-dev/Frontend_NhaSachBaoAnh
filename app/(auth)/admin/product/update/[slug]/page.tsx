@@ -1,5 +1,6 @@
 import { fetchAllDetailsProduct } from "@/services/productService";
 import FormUpdate from "./formUpdate";
+import NotFondComponent from "@/components/client/NotFond";
 
 export default async function UpdateProductPage({
   params,
@@ -9,6 +10,11 @@ export default async function UpdateProductPage({
   const { slug } = await params;
 
   const res = await fetchAllDetailsProduct(slug);
+
+  if (!res) {
+    return <NotFondComponent />;
+  }
+
   const { data } = res;
 
   return (

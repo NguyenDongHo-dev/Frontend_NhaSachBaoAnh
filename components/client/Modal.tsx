@@ -34,11 +34,11 @@ export default function Modal({ label, onClose, onConfirm }: Iprops) {
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="text-lg font-medium">{label}</div>
+        <div className="text-lg font-medium text-black">{label}</div>
 
         <div className="mt-6 flex justify-end gap-3">
           <Button
-            className="border border-gray-300 rounded-[4px] px-2 py-1"
+            className="border border-gray-300 rounded-[4px] px-2 py-1 text-black"
             onClick={handleClose}
           >
             Hủy

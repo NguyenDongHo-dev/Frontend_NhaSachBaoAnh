@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux";
 import { logout } from "@/redux/slices/userSlice";
 import { usePathname, useRouter } from "next/navigation";
 import { fetchLogoutUser } from "@/services/userService";
+import { clearFavourite } from "@/redux/slices/favouriteSlice";
 
 export default function CartHeader() {
   const pathname = usePathname();
@@ -72,6 +73,7 @@ export default function CartHeader() {
     }
 
     dispatch(logout());
+    dispatch(clearFavourite());
     setShow(false);
   };
 
@@ -98,6 +100,11 @@ export default function CartHeader() {
                 <Link onClick={() => setShow(false)} href={"/profile"}>
                   <div className="hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]">
                     Thông tin tài khoản
+                  </div>
+                </Link>
+                <Link onClick={() => setShow(false)} href={"/favourite"}>
+                  <div className="hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]">
+                    Sản phẩm đã yêu thích
                   </div>
                 </Link>
 

@@ -1,7 +1,6 @@
 import { fetchAllDetailsProduct } from "@/services/productService";
 import DetailsProduct from "./detailsProduct";
 import { getProductsByCategory } from "@/services/categoryService";
-import { fetchAllReviewByProduct } from "@/services/reviewServices";
 import NotFondComponent from "@/components/client/NotFond";
 
 export default async function PageDetailsProduct({

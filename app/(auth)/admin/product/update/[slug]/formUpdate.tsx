@@ -277,6 +277,7 @@ export default function FormUpdate({ data }: { data: Product }) {
                   <Image
                     src={`${process.env.API_SERVER}/${src.url}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     alt={`old-${index}`}
                     className="object-cover rounded border"
                   />
@@ -293,6 +294,7 @@ export default function FormUpdate({ data }: { data: Product }) {
                   <Image
                     src={URL.createObjectURL(file)}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     alt={`new-${index}`}
                     className="object-cover rounded border"
                   />

@@ -131,6 +131,7 @@ export default function DetailsProduct(props: IProps) {
                     src={`${process.env.API_SERVER}/${img.url}`}
                     alt={data.name}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-contain select-none pointer-events-none"
                   />
                 </div>
@@ -160,6 +161,7 @@ export default function DetailsProduct(props: IProps) {
                     src={`${process.env.API_SERVER}/${img.url}`}
                     alt={`Thumbnail ${index + 1}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover  translate-y-2 hover:translate-y-0 transition-all duration-400 select-none "
                   />
                 </div>

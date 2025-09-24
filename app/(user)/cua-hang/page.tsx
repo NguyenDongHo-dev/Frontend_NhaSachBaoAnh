@@ -2,10 +2,9 @@
 
 import { ProductListResponse } from "@/components/client/SearchHeader";
 import { fetchAllProduct } from "@/services/productService";
-import { notFound, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import ProductList from "./productList";
-import NotFound from "../not-found";
+import ProductListPage from "./productList";
 
 export default function StorePage() {
   const searchParams = useSearchParams();
@@ -27,8 +26,9 @@ export default function StorePage() {
           sort,
           searchName,
         });
-
-        setProductSearch(res);
+        if (res) {
+          setProductSearch(res);
+        }
       } finally {
         setLoading(false);
       }
@@ -38,7 +38,7 @@ export default function StorePage() {
 
   return (
     <div className="md:mt-0 mt-[30px] pt-5  max-w-laptop mx-auto md:max-w-laptop md:mx-auto w-full px-[15px]">
-      <ProductList
+      <ProductListPage
         dataRer={productSearch}
         loading={loading}
         searchName={searchName}

@@ -6,6 +6,7 @@ import {
   getProductsByCategory,
 } from "@/services/categoryService";
 import { fetchAllProduct } from "@/services/productService";
+import { notFound } from "next/navigation";
 
 async function Home() {
   const page = 1;
@@ -33,6 +34,15 @@ async function Home() {
     Promise.all(productByCategoryPromises),
     fetchAllProduct({ page, limit: limitLong, sort: sortDiscount }),
   ]);
+
+  if (
+    !discountProducts ||
+    !newProduct ||
+    !productsByCategory ||
+    !discountProductsLong
+  ) {
+    notFound();
+  }
 
   const categoriesWithProducts = dataCategories.map((cat, index) => ({
     ...cat,

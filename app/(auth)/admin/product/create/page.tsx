@@ -155,8 +155,6 @@ export default function createProductPage() {
       form: formData,
     });
 
-    console.log(res);
-
     if (res?.success) {
       toast.success("Tạo sản phẩm thành công");
       route.push("/admin/product");

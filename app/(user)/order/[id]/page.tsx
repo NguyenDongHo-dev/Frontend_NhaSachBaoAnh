@@ -152,6 +152,7 @@ export default function DetailsOrderPage({
                       <div className="relative size-[80px] min-w-[80px] ">
                         <Image
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           alt={`${item.product.name}`}
                           src={`${process.env.API_SERVER}/${item.product.image[0]}`}
                           className="object-cover"

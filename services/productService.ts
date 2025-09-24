@@ -39,7 +39,7 @@ export const fetchAllProduct = async ({
   status?: string;
   categoryId?: string;
   searchName?: string;
-}): Promise<ProductResponse> => {
+}): Promise<ProductResponse | null> => {
   const params: Record<string, string> = {
     limit: limit.toString(),
     page: page.toString(),
@@ -56,15 +56,15 @@ export const fetchAllProduct = async ({
   }
   const queryParams = new URLSearchParams(params);
   const res = await fetch(
-    `${process.env.API_SERVER}/api/product?${queryParams}`
-    // {
-    //   next: { revalidate: 3600 },
-    // }
+    `${process.env.API_SERVER}/api/product?${queryParams}`,
+    {
+      next: { revalidate: 3600 },
+    }
   );
 
-  if (!res.ok) throw new Error("Failed to fetch");
-
+  if (!res.ok) return null;
   const data = await res.json();
+
   return data;
 };
 

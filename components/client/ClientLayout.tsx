@@ -6,6 +6,8 @@ import { RootState } from "@/redux/store";
 import { loginSuccess, logout } from "@/redux/slices/userSlice";
 import { jwtDecode } from "jwt-decode";
 import { fetchDetailUser } from "@/services/userService";
+import { fetchGetAllFavourite } from "@/services/favouriteService";
+import { setFavourite } from "@/redux/slices/favouriteSlice";
 
 interface JwtPayload {
   id: number;
@@ -19,11 +21,14 @@ export default function AppWrapper({
   children: React.ReactNode;
 }) {
   const dispatch = useDispatch();
-  const { token, isLoggedIn } = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const checkAndRefreshToken = async () => {
-      let currentToken = token;
+      let currentToken;
+      if (user.token) {
+        currentToken = user.token;
+      }
 
       try {
         if (currentToken) {
@@ -58,7 +63,7 @@ export default function AppWrapper({
               })
             );
           }
-        } else if (isLoggedIn) {
+        } else if (user.isLoggedIn) {
           const res = await fetch(
             `${process.env.API_SERVER}/api/refresh-token`,
             {
@@ -92,7 +97,24 @@ export default function AppWrapper({
     };
 
     checkAndRefreshToken();
-  }, [token, isLoggedIn, dispatch]);
+  }, [user.token, user.isLoggedIn, dispatch]);
+
+  useEffect(() => {
+    const fetchFavourite = async () => {
+      if (user.token && user.user?.id) {
+        const res = await fetchGetAllFavourite({
+          idUser: user.user.id,
+          token: user.token,
+        });
+        if (res) {
+          if (res.data.length > 0) {
+            dispatch(setFavourite(res.data));
+          }
+        }
+      }
+    };
+    fetchFavourite();
+  }, [user.token, user?.user?.id]);
 
   return <>{children}</>;
 }

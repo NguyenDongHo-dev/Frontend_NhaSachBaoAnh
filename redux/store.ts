@@ -4,38 +4,35 @@ import storage from "redux-persist/lib/storage";
 
 import userReducer from "./slices/userSlice";
 import cartReducer from "./slices/cartSlice";
+import favouriteReducer from "./slices/favouriteSlice";
 
-const persistConfig = {
-  key: "root",
+const userPersistConfig = {
+  key: "user",
   storage,
-  whitelist: ["cart", "user"],
+  whitelist: ["user", "isLoggedIn"],
+};
+
+const cartPersistConfig = {
+  key: "cart",
+  storage,
 };
 
 const rootReducer = combineReducers({
-  user: userReducer,
-  cart: cartReducer,
+  user: persistReducer(userPersistConfig, userReducer),
+  cart: persistReducer(cartPersistConfig, cartReducer),
+  favourite: favouriteReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [
-          "persist/PERSIST",
-          "persist/REHYDRATE",
-          "persist/PAUSE",
-          "persist/FLUSH",
-          "persist/PURGE",
-          "persist/REGISTER",
-        ],
-      },
+      serializableCheck: false,
     }),
 });
 
 export const persistor = persistStore(store);
 
+// Type cho hooks
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
