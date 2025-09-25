@@ -12,6 +12,11 @@ interface playLoatNew {
   idUser: number | undefined;
 }
 
+interface playLoatGet extends playLoatNew {
+  page: number;
+  limit: number;
+}
+
 export const fetchFavourite = async ({
   product_id,
   token,
@@ -53,10 +58,17 @@ export const fetchGetAllFavourite = async ({
 
 export const fetchProductOfFavourite = async ({
   token,
+  page,
+  limit,
   idUser,
-}: playLoatNew): Promise<FavouriteOfProductResponse | null> => {
+}: playLoatGet): Promise<FavouriteOfProductResponse | null> => {
+  const params: Record<string, string> = {
+    page: page.toString(),
+    limit: limit.toString(),
+  };
+  const queryParams = new URLSearchParams(params);
   const res = await fetch(
-    `${process.env.API_SERVER}/api/wishlist/product/${idUser}`,
+    `${process.env.API_SERVER}/api/wishlist/product/${idUser}?${queryParams}`,
     {
       method: "GET",
       headers: {

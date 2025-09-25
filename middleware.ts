@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   if (token && publicRoutes.some((r) => pathname.startsWith(r))) {
     return NextResponse.redirect(new URL("/", request.url));
   }
-  const privateRoutes = ["/profile", "/order", "/thanh-toan"];
+  const privateRoutes = ["/profile", "/order", "/thanh-toan", "/favourite"];
 
   if (!token && privateRoutes.some((r) => pathname.startsWith(r))) {
     return NextResponse.redirect(new URL("/dang-nhap", request.url));

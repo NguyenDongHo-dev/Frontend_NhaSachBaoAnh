@@ -21,4 +21,8 @@ export interface FavouriteGetIDProductResponse extends ison {
 
 export interface FavouriteOfProductResponse extends ison {
   data: Product[];
+  total: number;
+  limit: number;
+  current_page: number;
+  last_page: number;
 }

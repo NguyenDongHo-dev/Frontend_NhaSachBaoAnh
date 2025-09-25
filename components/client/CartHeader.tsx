@@ -19,15 +19,13 @@ export default function CartHeader() {
   const [show, setShow] = useState<boolean>(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const currentPath = pathname;
   const publicRoutes = [
-    "/",
     "/dang-nhap",
     "/dang-ki",
     "/danh-muc-san-pham",
-    "gio-hang",
-    "san-pham",
-    "cua-hang",
+    "/gio-hang",
+    "/san-pham",
+    "/cua-hang",
   ];
 
   const startCloseTimer = () => {
@@ -66,7 +64,9 @@ export default function CartHeader() {
 
   const handleLogout = async () => {
     await fetchLogoutUser();
-    const isPublic = publicRoutes.some((path) => currentPath.startsWith(path));
+    const isPublic =
+      pathname === "/" ||
+      publicRoutes.some((path) => pathname.startsWith(path));
 
     if (!isPublic) {
       router.push("/");

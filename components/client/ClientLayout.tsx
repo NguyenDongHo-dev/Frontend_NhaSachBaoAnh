@@ -8,6 +8,7 @@ import { jwtDecode } from "jwt-decode";
 import { fetchDetailUser } from "@/services/userService";
 import { fetchGetAllFavourite } from "@/services/favouriteService";
 import { setFavourite } from "@/redux/slices/favouriteSlice";
+import { usePathname } from "next/navigation";
 
 interface JwtPayload {
   id: number;
@@ -21,6 +22,7 @@ export default function AppWrapper({
   children: React.ReactNode;
 }) {
   const dispatch = useDispatch();
+  const pathname = usePathname();
   const user = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
@@ -101,7 +103,7 @@ export default function AppWrapper({
 
   useEffect(() => {
     const fetchFavourite = async () => {
-      if (user.token && user.user?.id) {
+      if (user.token && user.user?.id && pathname !== "/favourite") {
         const res = await fetchGetAllFavourite({
           idUser: user.user.id,
           token: user.token,
