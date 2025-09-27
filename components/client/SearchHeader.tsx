@@ -57,10 +57,12 @@ export default function SearchHeader() {
           sort,
           searchName: debounce,
         });
-        console.log(res);
 
-        setProductSearch(res);
-        setLoading(false);
+        if (!res) {
+          setProductSearch({ data: [], total: 0 });
+        } else {
+          setProductSearch(res);
+        }
       };
       fetchSearch();
     }

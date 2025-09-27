@@ -20,7 +20,6 @@ export default async function updateCatogoryPgae({
         Cập nhật danh mục
       </h1>
       <FormUpdateCategory data={data} />
-      
     </div>
   );
 }

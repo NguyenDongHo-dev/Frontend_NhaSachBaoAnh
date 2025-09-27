@@ -21,7 +21,6 @@ export default function Badge() {
   useEffect(() => {
     if (totalQuantity === 0) {
       setShowBadge(false);
-      setShow(false);
       return;
     }
 

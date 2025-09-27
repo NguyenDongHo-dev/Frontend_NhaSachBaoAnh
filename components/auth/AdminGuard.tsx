@@ -21,20 +21,27 @@ export default function AdminGuard({ children }: { children: ReactNode }) {
   useEffect(() => {
     const checkToken = () => {
       try {
-        if (!user.token || !user.isLoggedIn) {
+        if (!user.isLoggedIn) {
           if (pathname !== "/") router.replace("/");
+          console.log("Chưa login, chờ xử lý...");
           return;
         }
 
-        const { role } = jwtDecode<MyJwtPayload>(user.token);
+        if (user.token) {
+          const { role } = jwtDecode<MyJwtPayload>(user.token);
 
-        if (role === 1) {
-          setAuthorized(true);
-        } else {
-          if (pathname !== "/") router.replace("/");
+          if (role === 1) {
+            setAuthorized(true);
+          } else {
+            if (pathname !== "/") {
+              router.replace("/");
+            }
+          }
         }
       } catch (error) {
-        if (pathname !== "/") router.replace("/");
+        if (pathname !== "/") {
+          router.replace("/");
+        }
       } finally {
         setChecked(true);
       }

@@ -191,17 +191,18 @@ export default function PaymentPage() {
       formPost.append(`products[${index}][product_id]`, item.id.toString());
       formPost.append(`products[${index}][quantity]`, item.quantity.toString());
     });
-
-    const res = await fetchCreateOrder({
-      token: user.token,
-      formOder: formPost,
-    });
-    if (res?.success) {
-      toast.success("Bạn đã đặt hàng thành công");
-      router.push(`/order/${res.order_id}`);
-      dispatch(clearCart());
-    } else {
-      toast.error("Đã xảy ra lỗi hãy thử lại");
+    if (user.token) {
+      const res = await fetchCreateOrder({
+        token: user.token,
+        formOder: formPost,
+      });
+      if (res?.success) {
+        toast.success("Bạn đã đặt hàng thành công");
+        router.push(`/order/${res.order_id}`);
+        dispatch(clearCart());
+      } else {
+        toast.error("Đã xảy ra lỗi hãy thử lại");
+      }
     }
   };
 

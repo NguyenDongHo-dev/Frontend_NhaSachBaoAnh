@@ -1,16 +1,24 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import logo from "../public/logo.png";
 import Link from "next/link";
 import NavBar from "./client/NavBar";
 import { fetchAllCategory } from "@/services/categoryService";
-import { CategoryResponse } from "@/types/category";
+import { Category, CategoryResponse } from "@/types/category";
 import CartHeader from "./client/CartHeader";
 import SearchHeader from "./client/SearchHeader";
 
-async function Header() {
-  const categories: CategoryResponse = await fetchAllCategory();
-  const { data } = categories;
+function Header() {
+  const [data, setData] = useState<Category[]>();
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+  const fetchCategories = async () => {
+    const categories = await fetchAllCategory();
+    setData(categories.data);
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full z-50 bg-white ">
@@ -21,7 +29,7 @@ async function Header() {
         <div className="min-h-[90px] flex items-center justify-between">
           {/* Cột trái */}
           <div className="flex items-center flex-1 ">
-            <NavBar data={data} />
+            {data && <NavBar data={data} />}
             <div className="pl-[15px] h-[43px] hidden items-center md:flex flex-1 ">
               <SearchHeader />
             </div>

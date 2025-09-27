@@ -5,6 +5,7 @@ import { fetchDetailUserByAdmin } from "@/services/userService";
 import { User } from "@/types/user";
 import React, { useEffect, useState } from "react";
 import FormUpdateUser from "./FormUpdateUser";
+import Link from "next/link";
 
 export default function UpdateUserPage({
   params,
@@ -30,6 +31,18 @@ export default function UpdateUserPage({
         id: Number(id),
       });
       const { data: dataUser } = dataRes;
+
+      if (!dataUser) {
+        return (
+          <div className="h-full w-full flex items-center justify-center">
+            <p> Đã có lỗi xảy ra</p>
+            <div className="mt-2">
+              <Link href={"/admin/users"}>Quay lại</Link>
+            </div>
+          </div>
+        );
+      }
+
       setData({
         id: dataUser.id,
         name: dataUser.name,

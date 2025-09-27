@@ -142,20 +142,22 @@ export default function FormUpdate({ data }: { data: Product }) {
 
     formData.append("_method", "PUT");
 
-    const res = await fetchUpdateProduct({
-      token: user.token,
-      form: formData,
-      productId: form.id,
-    });
+    if (user.token) {
+      const res = await fetchUpdateProduct({
+        token: user.token,
+        form: formData,
+        productId: form.id,
+      });
 
-    if (!res) {
-      toast.error("da co loi xay ra");
-      return;
-    }
-    const { success } = res;
-    if (success) {
-      toast.success("cap nhat thanh cong");
-      route.push("/admin/product");
+      if (!res) {
+        toast.error("da co loi xay ra");
+        return;
+      }
+      const { success } = res;
+      if (success) {
+        toast.success("cap nhat thanh cong");
+        route.push("/admin/product");
+      }
     }
   };
 

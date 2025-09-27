@@ -24,6 +24,7 @@ export const fetchFavourite = async ({
 }: playLoatNew): Promise<FavouriteResponse | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/wishlist/${idUser}`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -44,6 +45,7 @@ export const fetchGetAllFavourite = async ({
 }: playLoatNew): Promise<FavouriteGetIDProductResponse | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/wishlist/${idUser}`, {
     method: "GET",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -71,6 +73,7 @@ export const fetchProductOfFavourite = async ({
     `${process.env.API_SERVER}/api/wishlist/product/${idUser}?${queryParams}`,
     {
       method: "GET",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -91,6 +94,7 @@ export const fetchRemoveFavourite = async ({
 }: playLoatNew): Promise<ison | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/wishlist/${idUser}`, {
     method: "DELETE",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,

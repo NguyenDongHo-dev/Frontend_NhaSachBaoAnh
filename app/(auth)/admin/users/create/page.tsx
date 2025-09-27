@@ -89,20 +89,23 @@ export default function newUserPage() {
       setErr(errors);
       return;
     }
-    const res = await fetchCreateUser({ token: user.token, form });
 
-    const { success, status } = res;
+    if (user.token) {
+      const res = await fetchCreateUser({ token: user.token, form });
 
-    if (status === 422) {
-      setErr({
-        ...errors,
-        email: res.errors?.email?.[0],
-      });
-      return;
-    }
+      const { success, status } = res;
 
-    if (success) {
-      route.push("/admin/user");
+      if (status === 422) {
+        setErr({
+          ...errors,
+          email: res.errors?.email?.[0],
+        });
+        return;
+      }
+
+      if (success) {
+        route.push("/admin/user");
+      }
     }
   };
 

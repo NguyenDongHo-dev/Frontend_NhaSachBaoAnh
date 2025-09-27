@@ -25,7 +25,7 @@ export const fetchLogin = async (
 ): Promise<APIResponse> => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/login`, {
     method: "POST",
-
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",
@@ -48,6 +48,7 @@ export const fetchRegister = async (
 ): Promise<APIResponse> => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/register`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
     },
@@ -69,6 +70,7 @@ export const fetchCreateUser = async ({
 }: PayloatCreateUser): Promise<APIResponse> => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/createUser`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -94,6 +96,7 @@ export const fetchUpdateUserByAdmin = async ({
     `${process.env.API_SERVER}/api/user/updateByAdmin/${form.id}`,
     {
       method: "PUT",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -119,7 +122,7 @@ export const fetchDetailUser = async ({
 }): Promise<APIResponse> => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/details`, {
     method: "GET",
-
+    cache: "no-store",
     headers: {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
@@ -146,6 +149,7 @@ export const fetchDetailUserByAdmin = async ({
     `${process.env.API_SERVER}/api/user/detailsByAdmin/${id}`,
     {
       method: "GET",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -188,6 +192,7 @@ export const fetchAllUser = async ({
     `${process.env.API_SERVER}/api/user/allUser?${queryParams}`,
     {
       method: "GET",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -212,6 +217,7 @@ export const fetchDeleteUser = async ({
 }): Promise<UserResponseOne | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/delete/${id}`, {
     method: "DELETE",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -232,6 +238,7 @@ export const fetchUpdateUser = async ({
     `${process.env.API_SERVER}/api/user/update/${form.id}`,
     {
       method: "PUT",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
@@ -253,6 +260,7 @@ export const fetchUpdateUser = async ({
 export const fetchLogoutUser = async () => {
   const res = await fetch(`${process.env.API_SERVER}/api/user/logout`, {
     method: "POST",
+    cache: "no-store",
     credentials: "include",
     headers: {
       "Content-Type": "application/json",

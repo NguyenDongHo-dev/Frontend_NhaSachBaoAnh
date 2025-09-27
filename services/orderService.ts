@@ -17,6 +17,7 @@ export const fetchCreateOrder = async ({
 }: playLoatNew): Promise<OderCreateNew | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/order`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -39,6 +40,7 @@ export const fetchDetailOrder = async ({
 }): Promise<OderDetailsByUser> => {
   const res = await fetch(`${process.env.API_SERVER}/api/order/${idOrder}`, {
     method: "GET",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -73,6 +75,7 @@ export const fetchAllOrderOflUser = async ({
     `${process.env.API_SERVER}/api/order?${queryParams}`,
     {
       method: "GET",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -98,6 +101,7 @@ export const fetchDeleteOderOfUser = async ({
 }): Promise<ison> => {
   const res = await fetch(`${process.env.API_SERVER}/api/order/${id}`, {
     method: "DELETE",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -149,6 +153,7 @@ export const fetchAllOrderByAdmin = async ({
     `${process.env.API_SERVER}/api/order/allOrder?${queryParams}`,
     {
       method: "GET",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -176,6 +181,7 @@ export const fetchDetailByAdminOrder = async ({
     `${process.env.API_SERVER}/api/order/details/${idOrder}`,
     {
       method: "GET",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",
@@ -199,6 +205,7 @@ export const fetchUpdateOrderByAdmin = async ({
 }: playLoatNew): Promise<OderDetailsByUser> => {
   const res = await fetch(`${process.env.API_SERVER}/api/order/${id}`, {
     method: "PUT",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -219,6 +226,7 @@ export const fetchCancelledByAdmin = async ({
     `${process.env.API_SERVER}/api/order/cancelled/${id}`,
     {
       method: "PUT",
+      cache: "no-store",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

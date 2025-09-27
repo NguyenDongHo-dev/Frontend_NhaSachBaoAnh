@@ -56,25 +56,23 @@ function NavBar({ data }: NavBarProps) {
 
           <ul className=" font-bold !list-none !pl-0 text-[0.8em]">
             {data.map((item) => (
-              <li
-                onClick={handleToggle}
-                className="uppercase py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
+              <Link
                 key={item.id}
+                className="block uppercase py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
+                href={`/danh-muc-san-pham/${item.slug}`}
+                onClick={handleToggle}
               >
-                <Link className="block" href={item.slug}>
-                  {item.name}
-                </Link>
-              </li>
+                {item.name}
+              </Link>
             ))}
             {!user.isLoggedIn && (
-              <li
+              <Link
+                href={"/dang-nhap"}
                 onClick={handleToggle}
-                className="uppercase  py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
+                className="uppercase block  py-[15px] pl-5 border-t-[1px] border-[#ececec]  text-[hsla(0,0%,40%,.85)] hover:bg-[rgba(0,0,0,.05)]"
               >
-                <Link className="block" href={"/dang-nhap"}>
-                  Đăng nhâp
-                </Link>
-              </li>
+                Đăng nhâp
+              </Link>
             )}
 
             <div className="py-[25px] pl-5 text-black border-t-[1px] border-[#ececec]">

@@ -14,7 +14,7 @@ export const fetchAllDetailsProduct = async (
   slug: string
 ): Promise<ProductDetailsResponse | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/product/${slug}`, {
-    // next: { revalidate: 3600 },
+    next: { revalidate: 3600 },
   });
 
   if (!res.ok) {
@@ -74,6 +74,7 @@ export const fetchNewProduct = async ({
 }: playLoatNew): Promise<ProductDetailsResponse | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/product`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -97,6 +98,7 @@ export const fetchDeleteProduct = async ({
 }): Promise<ProductDetailsResponse> => {
   const res = await fetch(`${process.env.API_SERVER}/api/product/${id}`, {
     method: "DELETE",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -118,6 +120,7 @@ export const fetchUpdateProduct = async ({
     `${process.env.API_SERVER}/api/product/${productId}`,
     {
       method: "POST",
+      cache: "no-store",
       headers: {
         Authorization: `Bearer ${token}`,
         Accept: "application/json",

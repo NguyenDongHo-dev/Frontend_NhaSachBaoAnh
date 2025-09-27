@@ -34,14 +34,16 @@ export default function FormUpdateCategory({ data }: Props) {
   };
 
   const handleSubmit = async () => {
-    const res = await fetchUpdateCategory({ category, token: user.token });
-    if (!res) {
-      toast.error("Cập nhật thất bại");
-      return;
+    if (user.token) {
+      const res = await fetchUpdateCategory({ category, token: user.token });
+      if (!res) {
+        toast.error("Cập nhật thất bại");
+        return;
+      }
+      const { success } = res;
+      router.push("/admin/categories");
+      success && toast.success("Cập nhật thành công");
     }
-    const { success } = res;
-    router.push("/admin/categories");
-    success && toast.success("Cập nhật thành công");
   };
 
   return (

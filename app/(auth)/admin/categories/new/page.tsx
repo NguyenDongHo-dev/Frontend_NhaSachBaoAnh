@@ -49,16 +49,17 @@ export default function NewCategoryPage() {
       setErr(errors);
       return;
     }
-
-    const res = await fetchNewCategory({ form, token: user.token });
-    if (!res) {
-      toast.error("Tạo thất bại");
-      return;
-    }
-    const { success } = res;
-    if (success) {
-      route.push("/admin/categories");
-      toast.success("Tạo danh mục thành công");
+    if (user.token) {
+      const res = await fetchNewCategory({ form, token: user.token });
+      if (!res) {
+        toast.error("Tạo thất bại");
+        return;
+      }
+      const { success } = res;
+      if (success) {
+        route.push("/admin/categories");
+        toast.success("Tạo danh mục thành công");
+      }
     }
   };
   return (

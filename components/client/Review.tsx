@@ -99,23 +99,25 @@ export default function ShowReview({ product }: IProps) {
       product_id: product.id,
     };
     setLoading(true);
-    const res = await fetchNewReview({ token: user.token, form });
+    if (user.token) {
+      const res = await fetchNewReview({ token: user.token, form });
 
-    if (res?.success) {
-      toast.success("Cảm ơn bạn đã đánh giá");
+      if (res?.success) {
+        toast.success("Cảm ơn bạn đã đánh giá");
 
-      const dataRes = res.data;
-      setReviewAll((prev) => {
-        if (!prev) return undefined;
+        const dataRes = res.data;
+        setReviewAll((prev) => {
+          if (!prev) return undefined;
 
-        return {
-          ...prev,
-          data: [dataRes, ...prev.data],
-          total: prev.total + 1,
-        };
-      });
-    } else {
-      toast.error(res?.message);
+          return {
+            ...prev,
+            data: [dataRes, ...prev.data],
+            total: prev.total + 1,
+          };
+        });
+      } else {
+        toast.error(res?.message);
+      }
     }
     setLoading(false);
     setStar(undefined);

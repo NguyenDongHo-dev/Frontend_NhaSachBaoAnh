@@ -150,23 +150,25 @@ export default function createProductPage() {
       formData.append("images[]", file);
     });
 
-    const res = await fetchNewProduct({
-      token: user.token,
-      form: formData,
-    });
-
-    if (res?.success) {
-      toast.success("Tạo sản phẩm thành công");
-      route.push("/admin/product");
-    }
-    if (!res?.success && res?.errors) {
-      console.log(123);
-
-      Object.values(res.errors).forEach((errArray) => {
-        if (Array.isArray(errArray)) {
-          toast.error(errArray[0]);
-        }
+    if (user.token) {
+      const res = await fetchNewProduct({
+        token: user.token,
+        form: formData,
       });
+
+      if (res?.success) {
+        toast.success("Tạo sản phẩm thành công");
+        route.push("/admin/product");
+      }
+      if (!res?.success && res?.errors) {
+        console.log(123);
+
+        Object.values(res.errors).forEach((errArray) => {
+          if (Array.isArray(errArray)) {
+            toast.error(errArray[0]);
+          }
+        });
+      }
     }
   };
 

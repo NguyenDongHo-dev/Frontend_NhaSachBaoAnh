@@ -76,10 +76,12 @@ export default function DataProduct({
 
   ///delete product
   const handlerDelete = async (id: number) => {
-    const { success } = await fetchDeleteProduct({ id, token: user.token });
-    if (success) {
-      setProduct((pew) => pew.filter((p) => p.id !== id));
-      toast.success("Xóa thành công");
+    if (user.token) {
+      const { success } = await fetchDeleteProduct({ id, token: user.token });
+      if (success) {
+        setProduct((pew) => pew.filter((p) => p.id !== id));
+        toast.success("Xóa thành công");
+      }
     }
   };
 

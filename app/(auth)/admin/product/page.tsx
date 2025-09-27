@@ -9,6 +9,13 @@ export default async function Productpage() {
   const status = "all";
 
   const res = await fetchAllProduct({ sort, page, limit, status });
+  if (!res) {
+    return (
+      <div className="h-full w-full flex items-center justify-center">
+        Đã có lỗi xảy ra
+      </div>
+    );
+  }
 
   return (
     <div>

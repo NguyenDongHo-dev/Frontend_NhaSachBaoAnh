@@ -74,21 +74,22 @@ export default function FormUpdateUser({ data }: Props) {
       setErr(errors);
       return;
     }
+    if (user.token) {
+      const res = await fetchUpdateUserByAdmin({ token: user.token, form });
 
-    const res = await fetchUpdateUserByAdmin({ token: user.token, form });
+      const { success, status } = res;
 
-    const { success, status } = res;
-
-    if (status === 422 && !success) {
-      setErr({
-        ...errors,
-        email: res.message,
-      });
-      return;
-    }
-    if (success) {
-      toast.success("cap nhat nguoi dung thanh cong");
-      route.push("/admin/user");
+      if (status === 422 && !success) {
+        setErr({
+          ...errors,
+          email: res.message,
+        });
+        return;
+      }
+      if (success) {
+        toast.success("cap nhat nguoi dung thanh cong");
+        route.push("/admin/user");
+      }
     }
   };
 

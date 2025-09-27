@@ -24,10 +24,10 @@ interface playLoatNew {
 }
 
 export const fetchAllCategory = async (): Promise<CategoryResponse> => {
-  const res = await fetch(`${process.env.API_SERVER}/api/category`);
-
+  const res = await fetch(`${process.env.API_SERVER}/api/category`, {
+    next: { revalidate: 3600 },
+  });
   if (!res.ok) throw new Error("Failed to fetch");
-
   return res.json();
 };
 
@@ -47,7 +47,7 @@ export const getProductsByCategory = async (
 
   try {
     const res = await fetch(url, {
-      next: { revalidate: 3600 },
+      cache: "no-store",
     });
 
     if (!res.ok) {
@@ -99,7 +99,8 @@ export const geetDetailsCatogory = async (
   slug: string
 ): Promise<CategoryResponseOne | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/category/${slug}`, {
-    next: { revalidate: 3600 },
+    cache: "force-cache",
+    next: { revalidate: 1800 },
   });
 
   if (!res.ok) return null;
@@ -121,6 +122,7 @@ export const fetchUpdateCategory = async ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify(category),
+      cache: "no-store",
     }
   );
 
@@ -140,6 +142,7 @@ export const fetchDeleteCategory = async ({
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
+    cache: "no-store",
   });
 
   if (!res.ok) return null;
@@ -159,6 +162,7 @@ export const fetchNewCategory = async ({
       "Content-Type": "application/json",
     },
     body: JSON.stringify(form),
+    cache: "no-store",
   });
 
   if (!res.ok) return null;

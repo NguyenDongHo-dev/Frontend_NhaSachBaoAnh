@@ -11,6 +11,7 @@ export const fetchNewReview = async ({
 }: playLoatNew): Promise<GetDetailReview | null> => {
   const res = await fetch(`${process.env.API_SERVER}/api/review`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       Authorization: `Bearer ${token}`,
       Accept: "application/json",
@@ -42,7 +43,8 @@ export const fetchAllReviewByProduct = async ({
   const queryParams = new URLSearchParams(params);
 
   const res = await fetch(
-    `${process.env.API_SERVER}/api/review/${id}?${queryParams}`
+    `${process.env.API_SERVER}/api/review/${id}?${queryParams}`,
+    { next: { revalidate: 60 } }
   );
 
   if (!res.ok) throw new Error("Failed to fetch");

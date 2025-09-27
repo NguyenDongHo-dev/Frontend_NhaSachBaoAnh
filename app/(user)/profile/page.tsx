@@ -52,18 +52,6 @@ export default function ProfilePgae() {
   };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!user.token || !user.isLoggedIn) {
-        router.push("/dang-nhap");
-      } else {
-        const res = await fetchDetailUser({ token: user.token });
-        dispatch(setUser({ user: res.data }));
-      }
-    };
-    fetchUser();
-  }, [dispatch, router]);
-
-  useEffect(() => {
     if (user.user) {
       if (user.user && user.user.address) {
         const [street, ward, city] = user.user.address

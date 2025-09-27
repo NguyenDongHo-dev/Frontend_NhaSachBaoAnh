@@ -98,18 +98,30 @@ export default function CartHeader() {
             >
               <div className="flex flex-col gap-2">
                 <Link onClick={() => setShow(false)} href={"/profile"}>
-                  <div className="hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]">
+                  <div
+                    className={` ${
+                      pathname === "/profile" && "bg-primary text-white"
+                    } hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]`}
+                  >
                     Thông tin tài khoản
                   </div>
                 </Link>
                 <Link onClick={() => setShow(false)} href={"/favourite"}>
-                  <div className="hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]">
+                  <div
+                    className={` ${
+                      pathname === "/favourite" && "bg-primary text-white"
+                    } hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]`}
+                  >
                     Sản phẩm đã yêu thích
                   </div>
                 </Link>
 
                 <Link onClick={() => setShow(false)} href={"/order"}>
-                  <div className="hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]">
+                  <div
+                    className={` ${
+                      pathname === "/order" && "bg-primary text-white"
+                    } hover:bg-primary   hover:text-white transition-colors duration-200 cursor-pointer p-1 rounded-[4px]`}
+                  >
                     Đơn hàng của bạn
                   </div>
                 </Link>

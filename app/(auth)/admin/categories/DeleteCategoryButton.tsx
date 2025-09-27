@@ -12,15 +12,17 @@ export default function DeleteCategoryButton({ id }: { id: number }) {
   const user = useAppSelector((state) => state.user);
 
   const handleDelete = async () => {
-    const res = await fetchDeleteCategory({ id, token: user.token });
-    if (!res) {
-      toast.error("Xóa thất bại");
-      return;
-    }
-    const { success } = res;
-    if (success) {
-      toast.success("Xóa thành công");
-      route.refresh();
+    if (user.token) {
+      const res = await fetchDeleteCategory({ id, token: user.token });
+      if (!res) {
+        toast.error("Xóa thất bại");
+        return;
+      }
+      const { success } = res;
+      if (success) {
+        toast.success("Xóa thành công");
+        route.refresh();
+      }
     }
   };
 

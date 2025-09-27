@@ -34,15 +34,17 @@ export default function page() {
   useEffect(() => {
     const fetchUsers = async () => {
       setLoading(true);
-      const dataRes = await fetchAllUser({
-        token: user.token,
-        page,
-        limit,
-        sort,
-        searchEmail: debouncedSearch,
-      });
+      if (user.token) {
+        const dataRes = await fetchAllUser({
+          token: user.token,
+          page,
+          limit,
+          sort,
+          searchEmail: debouncedSearch,
+        });
 
-      setData(dataRes);
+        setData(dataRes);
+      }
 
       setLoading(false);
     };
@@ -51,21 +53,23 @@ export default function page() {
 
   //delete user
   const handleDelete = async (id: number) => {
-    const res = await fetchDeleteUser({ id, token: user.token });
-    if (!res) {
-      toast.error("Xóa thất bại");
-      return;
-    }
-    const { success } = res;
-    if (success) {
-      setData((prev) => {
-        if (!prev) return prev;
-        return {
-          ...prev,
-          data: prev.data.filter((u) => u.id !== id),
-          total: prev.total ? prev.total - 1 : prev.total,
-        };
-      });
+    if (user.token) {
+      const res = await fetchDeleteUser({ id, token: user.token });
+      if (!res) {
+        toast.error("Xóa thất bại");
+        return;
+      }
+      const { success } = res;
+      if (success) {
+        setData((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            data: prev.data.filter((u) => u.id !== id),
+            total: prev.total ? prev.total - 1 : prev.total,
+          };
+        });
+      }
     }
   };
 

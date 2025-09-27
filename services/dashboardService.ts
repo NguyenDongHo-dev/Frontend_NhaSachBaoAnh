@@ -46,6 +46,7 @@ export const fetchDashboard = async ({
   const res = await fetch(
     `${process.env.API_SERVER}/api/dashboard?${queryParams}`,
     {
+      cache: "no-store",
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
