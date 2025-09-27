@@ -1,48 +1,45 @@
-"use client";
+import type { Metadata } from "next";
+import StorePage from "./store";
 
-import { ProductListResponse } from "@/components/client/SearchHeader";
-import { fetchAllProduct } from "@/services/productService";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import ProductListPage from "./productList";
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-export default function StorePage() {
-  const searchParams = useSearchParams();
-  const searchName = searchParams.get("name") || "";
-  const [loading, setLoading] = useState(false);
-  const [productSearch, setProductSearch] = useState<ProductListResponse>();
-  const page = Number(searchParams.get("page") || 1);
-  const sort = searchParams.get("sort") || "latest";
+export const metadata: Metadata = {
+  title: "Nhà sách Bảo Anh – Cửa hàng sách trực tuyến",
+  description:
+    "Khám phá các đầu sách mới nhất, bán chạy nhất tại Nhà sách Bảo Anh.",
+  openGraph: {
+    title: "Nhà sách Bảo Anh – Cửa hàng sách trực tuyến",
+    description:
+      "Khám phá các đầu sách mới nhất, bán chạy nhất tại Nhà sách Bảo Anh.",
+    url: `${baseUrl}/cua-hang`,
+    siteName: "Nhà sách Bảo Anh",
+    type: "website",
+    images: [
+      {
+        url: `${baseUrl}/logo.png`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Nhà sách Bảo Anh – Cửa hàng sách trực tuyến",
+    description:
+      "Khám phá các đầu sách mới nhất, bán chạy nhất tại Nhà sách Bảo Anh.",
+    images: [
+      {
+        url: `${baseUrl}/logo.png`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  alternates: {
+    canonical: `${baseUrl}/cua-hang`,
+  },
+};
 
-  const limit = 12;
-
-  useEffect(() => {
-    const fetchSearchParams = async () => {
-      setLoading(true);
-      try {
-        const res = await fetchAllProduct({
-          page,
-          limit,
-          sort,
-          searchName,
-        });
-        if (res) {
-          setProductSearch(res);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchSearchParams();
-  }, [searchName, page, sort]);
-
-  return (
-    <div className="md:mt-0 mt-[30px] pt-5  max-w-laptop mx-auto md:max-w-laptop md:mx-auto w-full px-[15px]">
-      <ProductListPage
-        dataRer={productSearch}
-        loading={loading}
-        searchName={searchName}
-      />
-    </div>
-  );
+export default function Store() {
+  return <StorePage />;
 }
