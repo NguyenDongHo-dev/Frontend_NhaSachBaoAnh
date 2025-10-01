@@ -3,8 +3,6 @@ import "./globals.css";
 import { ReduxProvider } from "./providers";
 import AppWrapper from "@/components/client/ClientLayout";
 import ToastContainerMain from "@/components/client/ToastContainer";
-import AdminShell from "./(auth)/AdminShell";
-import ClientShell from "./(user)/ClientShell";
 import type { Metadata } from "next";
 
 const QuicksandSans = Quicksand({
@@ -22,21 +20,13 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isAdmin =
-    typeof window !== "undefined" &&
-    window.location.pathname.startsWith("/admin");
-
   return (
     <html lang="en">
       <body className={`${QuicksandSans.variable}`}>
         <ReduxProvider>
           <AppWrapper>
             <ToastContainerMain />
-            {isAdmin ? (
-              <AdminShell>{children}</AdminShell>
-            ) : (
-              <ClientShell>{children}</ClientShell>
-            )}
+            {children}
           </AppWrapper>
         </ReduxProvider>
       </body>

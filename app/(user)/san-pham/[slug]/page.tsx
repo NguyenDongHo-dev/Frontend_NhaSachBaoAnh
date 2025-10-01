@@ -5,7 +5,7 @@ import NotFondComponent from "@/components/client/NotFond";
 import type { Metadata } from "next";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateMetadata({

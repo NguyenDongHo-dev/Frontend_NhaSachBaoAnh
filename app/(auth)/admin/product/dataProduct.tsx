@@ -2,7 +2,7 @@
 
 import Button from "@/components/client/Button";
 import { Category } from "@/types/category";
-import { Product } from "@/types/product";
+import { Product, ProductResponse } from "@/types/product";
 import { EllipsisVertical, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -14,11 +14,12 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { useAppSelector } from "@/hooks/redux";
 import Loading from "@/components/loading ";
 import { toast } from "react-toastify";
+import Pagination from "@/components/client/Pagination";
 
 export default function DataProduct({
   dataProduct,
 }: {
-  dataProduct: Product[];
+  dataProduct: ProductResponse;
 }) {
   const user = useAppSelector((state) => state.user);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -34,7 +35,7 @@ export default function DataProduct({
   const limit = 20;
 
   const [ellipsis, setEllipsis] = useState<number | null>();
-  const [product, setProduct] = useState<Product[]>(dataProduct);
+  const [product, setProduct] = useState<ProductResponse>(dataProduct);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -49,8 +50,7 @@ export default function DataProduct({
         searchName: debounce,
       });
       if (res) {
-        const { data } = res;
-        setProduct(data);
+        setProduct(res);
       }
       setLoading(false);
     };
@@ -79,7 +79,10 @@ export default function DataProduct({
     if (user.token) {
       const { success } = await fetchDeleteProduct({ id, token: user.token });
       if (success) {
-        setProduct((pew) => pew.filter((p) => p.id !== id));
+        setProduct((prev) => ({
+          ...prev,
+          data: prev.data.filter((p) => p.id !== id),
+        }));
         toast.success("Xóa thành công");
       }
     }
@@ -111,7 +114,7 @@ export default function DataProduct({
             </tr>
           </thead>
           <tbody>
-            {product && product.length === 0 && (
+            {product && product.data.length === 0 && (
               <tr>
                 <td colSpan={7} className="text-center p-4 text-gray-500">
                   {!debounce
@@ -120,7 +123,7 @@ export default function DataProduct({
                 </td>
               </tr>
             )}
-            {product?.map((item, index) => (
+            {product?.data.map((item, index) => (
               <tr
                 key={item.id}
                 className={`w-full hover:bg-blue-50 ${
@@ -204,6 +207,12 @@ export default function DataProduct({
           </tbody>
         </table>
       </div>
+      {product.current_page && product.last_page && (
+        <Pagination
+          currentPage={Number(product.current_page)}
+          lastPage={Number(product.last_page)}
+        />
+      )}
     </div>
   );
 }

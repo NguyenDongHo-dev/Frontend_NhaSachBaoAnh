@@ -20,7 +20,7 @@ export default async function Productpage() {
   return (
     <div>
       <h1 className="font-bold text-primary text-[20px]">Quản lý sản phẩm</h1>
-      <DataProduct dataProduct={res.data} />
+      <DataProduct dataProduct={res} />
     </div>
   );
 }

@@ -9,11 +9,9 @@ export default function AdminShell({
   children: React.ReactNode;
 }) {
   return (
-    <AdminGuard>
-      <div className="flex h-screen w-full">
-        <Navbar />
-        <main className="ml-[200px] flex-1 p-4">{children}</main>
-      </div>
-    </AdminGuard>
+    <div>
+      <Navbar />
+      <main className="ml-[200px] p-4">{children}</main>
+    </div>
   );
 }

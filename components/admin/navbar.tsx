@@ -12,6 +12,7 @@ export default function Navbar() {
     { name: "Người dùng", href: "/admin/users" },
     { name: "Sản phẩm", href: "/admin/product" },
     { name: "Đơn hàng", href: "/admin/orders" },
+    { name: "Categories", href: "/admin/categories" },
   ];
 
   return (

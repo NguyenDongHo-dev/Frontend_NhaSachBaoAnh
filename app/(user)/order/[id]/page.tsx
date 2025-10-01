@@ -3,16 +3,18 @@ import type { Metadata } from "next";
 import DetailsOrderPage from "./detailOrder";
 
 type Props = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
   return {
-    title: `Đơn hàng #${params.id} – My Shop`,
+    title: `Đơn hàng #${id} – My Shop`,
     robots: { index: false, follow: false },
   };
 }
 
-export default function OrderDetailsPage({ params }: Props) {
-  return <DetailsOrderPage id={params.id} />;
+export default async function OrderDetailsPage({ params }: Props) {
+  const { id } = await params;
+  return <DetailsOrderPage id={id} />;
 }

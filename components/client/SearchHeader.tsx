@@ -49,8 +49,8 @@ export default function SearchHeader() {
   useEffect(() => {
     if (debounce.length >= 3) {
       setOpen(true);
-      setLoading(true);
       const fetchSearch = async () => {
+        setLoading(true);
         const res = await fetchAllProduct({
           page,
           limit,
@@ -63,6 +63,7 @@ export default function SearchHeader() {
         } else {
           setProductSearch(res);
         }
+        setLoading(false);
       };
       fetchSearch();
     }

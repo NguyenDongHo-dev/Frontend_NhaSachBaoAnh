@@ -83,7 +83,18 @@ export default function AllOrderDetailUserPage() {
   }
 
   if (!loading && allOder?.data?.length === 0) {
-    return <NotFondComponent />;
+    return (
+      <div className="flex items-center justify-center  py-5 mt-[30px] md:mt-[60px]">
+        <div className="flex flex-col gap-2 items-center">
+          <p>Bạn chửa có đơn hàng nào</p>
+          <Link href="/cua-hang">
+            <Button className="bg-primary text-white font-bold py-2 px-3 false cursor-pointer uppercase inline text-sm disabled:opacity-50 disabled:cursor-default border-2   transition-all duration-300 hover:shadow-md ">
+              Quay trở lại cửa hàng
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const handlerRemoveOrder = (id: number) => {
@@ -98,12 +109,16 @@ export default function AllOrderDetailUserPage() {
         token: user.token,
       });
       if (res.success) {
-        toast.success("Đã xóa đơn hàng hành công");
+        toast.success("Đã hủy đơn hàng hành công");
         setAllOder((prev) =>
           prev
             ? {
                 ...prev,
-                data: prev.data?.filter((order) => order.id !== selectedId),
+                data: prev.data?.map((order) =>
+                  order.id === selectedId
+                    ? { ...order, status: "cancel" }
+                    : order
+                ),
               }
             : prev
         );

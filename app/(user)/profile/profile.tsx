@@ -96,7 +96,7 @@ export default function ProfilePgae() {
   };
 
   return (
-    <div className="max-w-laptop mx-auto px-[15px] pt-[40px] pb-[100px] md:pt-[pt-[30px]]">
+    <div className="max-w-laptop mx-auto px-[15px] pt-[40px] md:pt-[30px]">
       <h1 className="text-[20px] text-primary font-bold">
         Thông tin tài khoản
       </h1>
